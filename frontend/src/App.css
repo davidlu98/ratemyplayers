@@ -1,0 +1,30 @@
+.App {
+  font-family: sans-serif;
+  background-color: gray;
+}
+
+body {
+  margin: 0;
+  background-color: #171717;
+}
+/* 
+.player-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: gray;
+} */
+
+/* .top-column {
+  display: flex;
+} */
+
+/* .left-column {
+  display: flex;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+} */
