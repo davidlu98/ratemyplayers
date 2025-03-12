@@ -9,7 +9,7 @@ export default function Account({ user }) {
   const [reviews, setReviews] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  console.log(selectedPlayer);
+  // console.log(selectedPlayer);
 
   if (!user) {
     return <h1>You are not logged in</h1>;
