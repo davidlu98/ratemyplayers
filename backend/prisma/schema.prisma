@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,51 +8,48 @@ datasource db {
 }
 
 model Player {
-  id                 String   @id @default(uuid())
-  current_name       String   @unique
-  current_name_lower String   @unique
+  id                 String         @id @default(uuid())
+  current_name       String         @unique
   region             Region
-  server             String
   level              Int
-  archetype          String // Explorer, Cygnus Knight, etc.
-  branch             String // Warrior, Mage, Archer, etc.
-  job                String // Hero, Paladin, Dark Knight, etc.
+  archetype          String
+  branch             String
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+  server             String
   avatar             String
-  created_at         DateTime @default(now())
-  updated_at         DateTime @updatedAt
-
-  previous_names PreviousName[]
-  reviews        Review[]
+  current_name_lower String         @unique
+  job                String
+  previous_names     PreviousName[]
+  reviews            Review[]
 }
 
 model PreviousName {
   id         String   @id @default(uuid())
   player_id  String
   name       String
-  name_lower String
   changed_at DateTime @default(now())
-
-  player Player @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  name_lower String
+  player     Player   @relation(fields: [player_id], references: [id], onDelete: Cascade)
 }
 
 model Review {
   id         String   @id @default(uuid())
+  player_id  String
   rating     Int
   comment    String
-  player_id  String // References the player being reviewed
-  user_id    String // The user who created the review
   created_at DateTime @default(now())
-
-  player Player @relation(fields: [player_id], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    String
+  player     Player   @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model User {
   id         String   @id @default(uuid())
   username   String   @unique
   password   String
-  reviews    Review[]
   created_at DateTime @default(now())
+  reviews    Review[]
 }
 
 enum Region {
