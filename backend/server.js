@@ -5,8 +5,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://ywratemyplayersbackend2025.onrender.com",
-    credentials: true,
+    origin: "https://ywratemyplayers2025.onrender.com",
   })
 );
 app.use(express.json());
