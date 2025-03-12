@@ -24,7 +24,7 @@ export default function CreateReview({ user, fetchPlayerReviews, playerId }) {
 
     if (token) {
       if (comment.trim() !== "") {
-        console.log("submitted review:", comment);
+        // console.log("submitted review:", comment);
         try {
           await axios.post(
             "https://ywratemyplayersbackend2025.onrender.com/reviews/",

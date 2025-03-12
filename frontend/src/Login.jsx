@@ -21,7 +21,7 @@ export default function Login({ setUser }) {
           password,
         }
       );
-      console.log("data in login:", data);
+      // console.log("data in login:", data);
       window.localStorage.setItem("token", data);
 
       const response = await axios.get(

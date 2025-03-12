@@ -22,7 +22,7 @@ export default function Register({ setUser }) {
     );
     window.localStorage.setItem("token", data);
 
-    console.log(data);
+    // console.log(data);
 
     const response = await axios.get(
       "https://ywratemyplayersbackend2025.onrender.com/account",
