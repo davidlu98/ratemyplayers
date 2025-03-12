@@ -12,7 +12,9 @@ export default function Home() {
 
   const getReviews = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/reviews/");
+      const { data } = await axios.get(
+        "https://ywratemyplayersbackend2025.onrender.com/reviews/"
+      );
       // console.log(data);
 
       // Group reviews by player.current_name

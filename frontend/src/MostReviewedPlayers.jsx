@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, Box, Typography } from "@mui/material";
 
 export default function MostReviewedPlayers({ mostReviewedPlayers }) {
-  // console.log("in mrp", mostReviewedPlayers);
-
   return (
     <Box
       sx={{

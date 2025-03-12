@@ -1,9 +1,15 @@
 const express = require("express");
 const cors = require("cors");
+
 const app = express();
 
+app.use(
+  cors({
+    origin: "https://ywratemyplayersbackend2025.onrender.com",
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(cors());
 
 const players = require("./players");
 const reviews = require("./reviews");
@@ -17,4 +23,5 @@ app.use("/register", register);
 app.use("/login", login);
 app.use("/account", account);
 
-app.listen(3000);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

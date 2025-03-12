@@ -34,7 +34,7 @@ export default function PlayerPage({ user }) {
       setLoading(true);
 
       const response = await axios.get(
-        `http://localhost:3000/players/${region}/${name}`
+        `https://ywratemyplayersbackend2025.onrender.com/players/${region}/${name}`
       );
 
       if (response.status === 404) {
@@ -55,7 +55,7 @@ export default function PlayerPage({ user }) {
   const fetchPlayerReviews = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/reviews/${playerData.id}`
+        `https://ywratemyplayersbackend2025.onrender.com/reviews/${playerData.id}`
       );
       // console.log(data);
 

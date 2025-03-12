@@ -14,16 +14,22 @@ export default function Login({ setUser }) {
     event.preventDefault();
 
     try {
-      const { data } = await axios.post("http://localhost:3000/login", {
-        username,
-        password,
-      });
+      const { data } = await axios.post(
+        "https://ywratemyplayersbackend2025.onrender.com/login",
+        {
+          username,
+          password,
+        }
+      );
       console.log("data in login:", data);
       window.localStorage.setItem("token", data);
 
-      const response = await axios.get("http://localhost:3000/account", {
-        headers: { authorization: data },
-      });
+      const response = await axios.get(
+        "https://ywratemyplayersbackend2025.onrender.com/account",
+        {
+          headers: { authorization: data },
+        }
+      );
 
       setUser(response.data);
       navigate("/");

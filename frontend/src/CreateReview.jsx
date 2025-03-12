@@ -27,7 +27,7 @@ export default function CreateReview({ user, fetchPlayerReviews, playerId }) {
         console.log("submitted review:", comment);
         try {
           await axios.post(
-            "http://localhost:3000/reviews/",
+            "https://ywratemyplayersbackend2025.onrender.com/reviews/",
             {
               player_id: playerId,
               rating: rating,

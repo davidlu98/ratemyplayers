@@ -21,7 +21,7 @@ export default function Account({ user }) {
     if (token) {
       try {
         const { data } = await axios.get(
-          "http://localhost:3000/account/reviews",
+          "https://ywratemyplayersbackend2025.onrender.com/account/reviews",
           {
             headers: { authorization: token },
           }
@@ -58,9 +58,12 @@ export default function Account({ user }) {
 
     if (token) {
       try {
-        await axios.delete(`http://localhost:3000/reviews/${id}`, {
-          headers: { authorization: token },
-        });
+        await axios.delete(
+          `https://ywratemyplayersbackend2025.onrender.com/reviews/${id}`,
+          {
+            headers: { authorization: token },
+          }
+        );
         getReviews();
       } catch (error) {
         console.log("Error when deleting review");

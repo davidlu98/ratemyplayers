@@ -21,9 +21,12 @@ function App() {
 
     const tryToLogin = async () => {
       if (token) {
-        const response = await axios.get("http://localhost:3000/account", {
-          headers: { authorization: token },
-        });
+        const response = await axios.get(
+          "https://ywratemyplayersbackend2025.onrender.com/account",
+          {
+            headers: { authorization: token },
+          }
+        );
 
         setUser(response.data);
         navigate("/");

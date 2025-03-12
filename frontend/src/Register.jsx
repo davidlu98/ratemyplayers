@@ -13,17 +13,23 @@ export default function Register({ setUser }) {
   const register = async (event) => {
     event.preventDefault();
 
-    const { data } = await axios.post("http://localhost:3000/register", {
-      username,
-      password,
-    });
+    const { data } = await axios.post(
+      "https://ywratemyplayersbackend2025.onrender.com/register",
+      {
+        username,
+        password,
+      }
+    );
     window.localStorage.setItem("token", data);
 
     console.log(data);
 
-    const response = await axios.get("http://localhost:3000/account", {
-      headers: { authorization: data },
-    });
+    const response = await axios.get(
+      "https://ywratemyplayersbackend2025.onrender.com/account",
+      {
+        headers: { authorization: data },
+      }
+    );
 
     console.log(response);
 

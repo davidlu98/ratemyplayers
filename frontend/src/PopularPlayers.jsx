@@ -3,8 +3,6 @@ import { Card, CardContent, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function PopularPlayers({ popularPlayers }) {
-  //   console.log("in pop players", popularPlayers);
-
   return (
     <Box
       sx={{
