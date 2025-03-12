@@ -40,9 +40,7 @@ export default function ButtonAppBar({ user, logout }) {
               </Link>
             </Typography>
           </Box>
-          <Box>
-            <SearchBar />
-          </Box>
+          <SearchBar />
           <Box>
             {user ? (
               <>

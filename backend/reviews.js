@@ -5,6 +5,19 @@ const prisma = new PrismaClient();
 
 // all routes have prefix /reviews
 
+router.get("/", async (req, res, next) => {
+  try {
+    const reviews = await prisma.review.findMany({
+      include: {
+        player: true,
+      },
+    });
+    res.send(reviews);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/:player_id", async (req, res, next) => {
   try {
     const reviews = await prisma.review.findMany({

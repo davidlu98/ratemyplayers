@@ -28,7 +28,7 @@ const SearchBar = () => {
   };
 
   return (
-    <Box sx={{ minWidth: 120, my: 3 }}>
+    <Box sx={{ minWidth: 120, my: 2 }}>
       <form onSubmit={searchPlayer}>
         <Box
           sx={{
@@ -38,7 +38,7 @@ const SearchBar = () => {
             justifyContent: "center",
           }}
         >
-          <FormControl sx={{ minWidth: 80 }}>
+          <FormControl>
             <InputLabel id="region-label" sx={{ color: "#ff1744" }}>
               Region
             </InputLabel>
