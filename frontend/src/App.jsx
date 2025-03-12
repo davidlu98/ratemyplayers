@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     const token = window.localStorage.getItem("token");
-    console.log("hello world");
+    // console.log("hello world");
 
     const tryToLogin = async () => {
       if (token) {
