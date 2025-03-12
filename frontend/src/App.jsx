@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-import { Routes, Route, useNavigate, Link, useParams } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import Home from "./Home";
@@ -18,6 +18,7 @@ function App() {
 
   useEffect(() => {
     const token = window.localStorage.getItem("token");
+    console.log("hello world");
 
     const tryToLogin = async () => {
       if (token) {
