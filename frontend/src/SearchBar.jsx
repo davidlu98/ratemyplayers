@@ -76,7 +76,7 @@ const SearchBar = () => {
             size="small"
             sx={{
               width: 200,
-              "& .MuiInputLabel-root": { color: "#ff1744" }, // Label color
+              "& .MuiInputLabel-root": { color: "white" }, // Label color
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#ff1744" }, // Default border color
                 "&:hover fieldset": { borderColor: "#ff8a80" }, // Hover border color

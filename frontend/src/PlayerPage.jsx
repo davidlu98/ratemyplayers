@@ -1,21 +1,21 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 
-import { Box, Typography } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 
 import PlayerReviews from "./PlayerReviews";
 import RatingDistribution from "./RatingDistribution";
 import PlayerInformation from "./PlayerInformation";
 import RatingDisplay from "./RatingDisplay";
-import CreateReview from "./CreateReview";
 
-export default function PlayerPage({ user }) {
+export default function PlayerPage() {
   const { region, name } = useParams(); // Get player name and region from URL
   const [playerData, setPlayerData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sortType, setSortType] = useState("newest");
 
   const [ratingCounts, setRatingCounts] = useState({
     1: 0,
@@ -28,14 +28,14 @@ export default function PlayerPage({ user }) {
   const [averageRating, setAverageRating] = useState(0);
   const [reviews, setReviews] = useState([]);
 
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+
   const fetchPlayerData = async () => {
     try {
       setError(null);
       setLoading(true);
 
-      const response = await axios.get(
-        `https://ywratemyplayersbackend2025.onrender.com/players/${region}/${name}`
-      );
+      const response = await axios.get(`${API_URL}/players/${region}/${name}`);
 
       if (response.status === 404) {
         throw new Error("Player not found.");
@@ -54,9 +54,7 @@ export default function PlayerPage({ user }) {
 
   const fetchPlayerReviews = async () => {
     try {
-      const { data } = await axios.get(
-        `https://ywratemyplayersbackend2025.onrender.com/reviews/${playerData.id}`
-      );
+      const { data } = await axios.get(`${API_URL}/reviews/${playerData.id}`);
       // console.log(data);
 
       // Reset rating counts before recalculating
@@ -95,6 +93,10 @@ export default function PlayerPage({ user }) {
       fetchPlayerReviews();
     }
   }, [playerData]);
+
+  // useEffect(() => {
+  //   console.log("sort type is:", sortType);
+  // }, [sortType]);
 
   return (
     <>
@@ -146,16 +148,21 @@ export default function PlayerPage({ user }) {
                 <RatingDistribution ratingCounts={ratingCounts} />
               </div>
             </div>
-            <div style={{ marginTop: "20px" }}>
-              <CreateReview
-                user={user}
-                fetchPlayerReviews={fetchPlayerReviews}
-                playerId={playerData.id}
-              />
-            </div>
+            <Button
+              component={Link}
+              to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
+              variant="contained"
+              sx={{
+                backgroundColor: "#ff1744",
+                textTransform: "none",
+                mt: "10px",
+              }}
+            >
+              Write a review
+            </Button>
           </div>
           <div>
-            <PlayerReviews reviews={reviews} />
+            <PlayerReviews reviews={reviews} setSortType={setSortType} />
           </div>
         </div>
       )}

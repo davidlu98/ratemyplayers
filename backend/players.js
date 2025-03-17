@@ -108,7 +108,6 @@ const parseText = (input) => {
   }
 };
 
-// TODO
 const fetchMapleRanksData = async (region, name) => {
   try {
     const link =
@@ -159,6 +158,58 @@ const fetchMapleRanksData = async (region, name) => {
   }
 };
 
+router.get("/recent", async (req, res, next) => {
+  try {
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+    const recentReviews = await prisma.review.findMany({
+      where: {
+        created_at: { gte: twentyFourHoursAgo },
+      },
+      distinct: ["player_id"],
+      include: {
+        player: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      take: 10,
+    });
+
+    const recentPlayers = recentReviews.map((review) => review.player);
+    res.send(recentPlayers);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/most-reviewed", async (req, res, next) => {
+  try {
+    const mostReviewedPlayers = await prisma.player.findMany({
+      select: {
+        current_name: true,
+        server: true,
+        region: true,
+        level: true,
+        job: true,
+        _count: {
+          select: { reviews: true },
+        },
+      },
+      orderBy: {
+        reviews: {
+          _count: "desc",
+        },
+      },
+      take: 10,
+    });
+    return res.send(mostReviewedPlayers);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/:region/:name", async (req, res, next) => {
   try {
     const { region, name } = req.params;
@@ -171,7 +222,40 @@ router.get("/:region/:name", async (req, res, next) => {
     });
 
     if (player) {
-      return res.send(player);
+      const playerInformation = await fetchMapleRanksData(region, name);
+
+      // If player information can not be fetched, return existing db entry
+      if (!playerInformation || typeof playerInformation !== "object") {
+        return res.send(player);
+      } else {
+        // Update player information if MapleRanks character is "similar enough" to entry in db
+        // Example: Level 294 Ice Lightning & Level 294 Fire Poison, or Level 294 Ice Lightning -> Level 295 Ice Lightning
+        const { level, job, jobInformation, server, avatarURL } =
+          playerInformation;
+
+        if (
+          player.server === server &&
+          player.branch === jobInformation.branch &&
+          level >= player.level
+        ) {
+          const updatedPlayer = await prisma.player.update({
+            data: {
+              level: Number(level),
+              archetype: jobInformation.archetype,
+              job: job,
+              avatar: avatarURL,
+            },
+            where: {
+              id: player.id,
+            },
+          });
+
+          return res.send(updatedPlayer);
+        } else {
+          // If player name changed?
+          return res.send(player);
+        }
+      }
     }
 
     if (!player) {
@@ -221,19 +305,5 @@ router.get("/:region/:name", async (req, res, next) => {
     next(error);
   }
 });
-
-// router.patch("/:name", async (req, res, next) => {
-//   try {
-//     const updatedPlayer = await prisma.player.update({
-//       where: {
-//         current_name: req.params.name,
-//       },
-//       data: {},
-//     });
-//     res.send(updatedPlayer);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 module.exports = router;

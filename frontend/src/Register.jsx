@@ -10,26 +10,22 @@ export default function Register({ setUser }) {
 
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+
   const register = async (event) => {
     event.preventDefault();
 
-    const { data } = await axios.post(
-      "https://ywratemyplayersbackend2025.onrender.com/register",
-      {
-        username,
-        password,
-      }
-    );
+    const { data } = await axios.post(`${API_URL}/register`, {
+      username,
+      password,
+    });
     window.localStorage.setItem("token", data);
 
     // console.log(data);
 
-    const response = await axios.get(
-      "https://ywratemyplayersbackend2025.onrender.com/account",
-      {
-        headers: { authorization: data },
-      }
-    );
+    const response = await axios.get(`${API_URL}/account`, {
+      headers: { authorization: data },
+    });
 
     console.log(response);
 
@@ -84,7 +80,7 @@ export default function Register({ setUser }) {
           <Button
             type="submit"
             variant="contained"
-            sx={{ backgroundColor: "#ff1744" }}
+            sx={{ backgroundColor: "#ff1744", textTransform: "none" }}
             fullWidth
           >
             Register

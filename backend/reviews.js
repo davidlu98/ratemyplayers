@@ -11,8 +11,28 @@ router.get("/", async (req, res, next) => {
       include: {
         player: true,
       },
+      orderBy: {
+        created_at: "desc",
+      },
     });
     res.send(reviews);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/:reviewId/votes", async (req, res, next) => {
+  try {
+    const { reviewId } = req.params;
+
+    const upvotes = await prisma.vote.count({
+      where: { review_id: reviewId, value: 1 },
+    });
+    const downvotes = await prisma.vote.count({
+      where: { review_id: reviewId, value: -1 },
+    });
+
+    res.send({ upvotes: upvotes, downvotes: downvotes });
   } catch (error) {
     next(error);
   }
@@ -24,11 +44,29 @@ router.get("/:player_id", async (req, res, next) => {
       where: {
         player_id: req.params.player_id,
       },
+      select: {
+        id: true,
+        player_id: true,
+        rating: true,
+        comment: true,
+        created_at: true,
+        anonymous: true,
+        player: true,
+        user: {
+          select: { username: true },
+        },
+      },
       orderBy: {
         created_at: "desc",
       },
     });
-    res.send(reviews);
+
+    const sanitizedReviews = reviews.map((review) => ({
+      ...review,
+      user: review.anonymous ? null : review.user,
+    }));
+
+    res.send(sanitizedReviews);
   } catch (error) {
     next(error);
   }
@@ -46,6 +84,7 @@ router.post("/", async (req, res, next) => {
           player_id: req.body.player_id,
           rating: Number(req.body.rating),
           comment: req.body.comment,
+          anonymous: req.body.anonymous,
         },
       });
       return res.send(review);

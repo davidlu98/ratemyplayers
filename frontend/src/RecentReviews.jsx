@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-export default function PopularPlayers({ popularPlayers }) {
+export default function RecentReviews({ recentPlayers }) {
   return (
     <Box
       sx={{
@@ -14,7 +14,7 @@ export default function PopularPlayers({ popularPlayers }) {
       }}
     >
       <Typography sx={{ color: "white", margin: "10px" }}>
-        Popular players of the day
+        Recent reviews of the day
       </Typography>
       <Box
         sx={{
@@ -24,7 +24,7 @@ export default function PopularPlayers({ popularPlayers }) {
           width: "600px",
         }}
       >
-        {popularPlayers.map((player, index) => {
+        {recentPlayers.map((player, index) => {
           return (
             <Card
               variant="outlined"

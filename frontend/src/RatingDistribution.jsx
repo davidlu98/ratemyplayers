@@ -83,7 +83,7 @@ const RatingDistribution = ({ ratingCounts }) => {
                       backgroundColor: ratingColors[rating],
                       height: "100%",
                       borderRadius: 5,
-                      transition: "width 0.8s ease-in-out",
+                      transition: "width 0.5s ease-in-out",
                     }}
                   />
                 </Box>

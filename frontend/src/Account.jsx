@@ -9,10 +9,14 @@ export default function Account({ user }) {
   const [reviews, setReviews] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  // console.log(selectedPlayer);
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   if (!user) {
-    return <h1>You are not logged in</h1>;
+    return (
+      <Typography variant="h6" sx={{ color: "white" }}>
+        You are not logged in
+      </Typography>
+    );
   }
 
   const getReviews = async () => {
@@ -20,35 +24,13 @@ export default function Account({ user }) {
 
     if (token) {
       try {
-        const { data } = await axios.get(
-          "https://ywratemyplayersbackend2025.onrender.com/account/reviews",
-          {
-            headers: { authorization: token },
-          }
-        );
-        // console.log(data);
+        const { data } = await axios.get(`${API_URL}/account/reviews`, {
+          headers: { authorization: token },
+        });
 
-        // Group reviews by player.current_name
-        const groupedReviews = data.reduce((acc, review) => {
-          const { current_name, avatar, region, server, level, job } =
-            review.player;
-
-          if (!acc[current_name]) {
-            acc[current_name] = {
-              playerInfo: { current_name, avatar, region, server, level, job },
-              reviews: [],
-            };
-          }
-
-          acc[current_name].reviews.push(review);
-          return acc;
-        }, {});
-
-        // console.log(groupedReviews);
-
-        setReviews(groupedReviews);
+        setReviews(data);
       } catch (error) {
-        console.log("Error when obtaining review");
+        console.log("Error when obtaining all review");
       }
     }
   };
@@ -58,12 +40,9 @@ export default function Account({ user }) {
 
     if (token) {
       try {
-        await axios.delete(
-          `https://ywratemyplayersbackend2025.onrender.com/reviews/${id}`,
-          {
-            headers: { authorization: token },
-          }
-        );
+        await axios.delete(`${API_URL}/reviews/${id}`, {
+          headers: { authorization: token },
+        });
         getReviews();
       } catch (error) {
         console.log("Error when deleting review");

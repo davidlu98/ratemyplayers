@@ -39,9 +39,11 @@ model Review {
   rating     Int
   comment    String
   created_at DateTime @default(now())
+  anonymous  Boolean  @default(false)
   user_id    String
   player     Player   @relation(fields: [player_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  votes      Vote[]
 }
 
 model User {
@@ -50,6 +52,18 @@ model User {
   password   String
   created_at DateTime @default(now())
   reviews    Review[]
+  Vote       Vote[]
+}
+
+model Vote {
+  id        String @id @default(uuid())
+  user_id   String
+  review_id String
+  value     Int // 1 for upvote, -1 for downvote
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  review    Review @relation(fields: [review_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, review_id]) // Prevents multiple votes by the same user on a single review
 }
 
 enum Region {

@@ -11,23 +11,22 @@ import Account from "./Account";
 import Login from "./Login";
 import Register from "./Register";
 import PlayerPage from "./PlayerPage";
+import CreateReview from "./CreateReview";
 
 function App() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const token = window.localStorage.getItem("token");
-    // console.log("hello world");
 
     const tryToLogin = async () => {
       if (token) {
-        const response = await axios.get(
-          "https://ywratemyplayersbackend2025.onrender.com/account",
-          {
-            headers: { authorization: token },
-          }
-        );
+        const response = await axios.get(`${API_URL}/account`, {
+          headers: { authorization: token },
+        });
 
         setUser(response.data);
         navigate("/");
@@ -40,6 +39,7 @@ function App() {
   const logout = () => {
     setTimeout(() => setUser(null), 0);
     window.localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
@@ -50,9 +50,10 @@ function App() {
         <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/account" element={<Account user={user} />} />
         <Route path="/" element={<Home />} />
+        <Route path="/players/:region/:name" element={<PlayerPage />} />
         <Route
-          path="/players/:region/:name"
-          element={<PlayerPage user={user} />}
+          path="/write-review/:region/:playerName/:playerId"
+          element={<CreateReview user={user} />}
         />
       </Routes>
     </div>

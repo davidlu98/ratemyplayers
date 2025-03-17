@@ -1,13 +1,32 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
-import { Typography, Box, Rating, TextField, Button } from "@mui/material";
+import {
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  Box,
+  Rating,
+  TextField,
+  Button,
+} from "@mui/material";
+
+import { useNavigate, useParams } from "react-router-dom";
 
 const filledStar = "/filled-star2.png";
 
-export default function CreateReview({ user, fetchPlayerReviews, playerId }) {
+export default function CreateReview({ user }) {
+  const navigate = useNavigate();
+
+  const { region, playerName, playerId } = useParams();
+
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(3);
+
+  const [anonymous, setAnonymous] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   const ratingLabels = {
     5: "Awesome",
@@ -20,25 +39,27 @@ export default function CreateReview({ user, fetchPlayerReviews, playerId }) {
   const submitReview = async (event) => {
     event.preventDefault();
 
+    if (!user) {
+      setErrorMessage("Must be logged in to submit a review");
+      return;
+    }
+
     const token = window.localStorage.getItem("token");
 
     if (token) {
       if (comment.trim() !== "") {
-        // console.log("submitted review:", comment);
         try {
           await axios.post(
-            "https://ywratemyplayersbackend2025.onrender.com/reviews/",
+            `${API_URL}/reviews/`,
             {
               player_id: playerId,
-              rating: rating,
+              rating,
               comment: comment.trim(),
+              anonymous,
             },
             { headers: { authorization: token } }
           );
-          setComment("");
-          setRating(3);
-
-          fetchPlayerReviews();
+          navigate(`/players/${region}/${playerName}`);
         } catch (error) {
           console.log("Error when submitting review");
         }
@@ -47,90 +68,114 @@ export default function CreateReview({ user, fetchPlayerReviews, playerId }) {
   };
 
   return (
-    <div>
-      {user && (
-        <Box
-          component="form"
-          onSubmit={submitReview}
-          sx={{
-            maxWidth: 600,
-            p: 3,
-            boxShadow: 3,
-            bgcolor: "#1a1a1a",
-          }}
-        >
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{ fontWeight: "bold", color: "white" }}
-            >
-              Rate Your Experience
-            </Typography>
-          </Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        mt: "16px",
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={submitReview}
+        sx={{
+          maxWidth: 600,
+          width: "100%",
+          p: 3,
+          boxShadow: 3,
+          bgcolor: "#1a1a1a",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
+            Rate Your Experience
+          </Typography>
+        </Box>
 
-          {/* Select Rating */}
-          <Box sx={{ display: "flex", mb: "10px" }}>
-            <Rating
-              name="custom-images"
-              value={rating}
-              onChange={(_, newValue) =>
-                setRating(newValue >= 1 ? newValue : 1)
-              }
-              size="large"
-              icon={
-                <img
-                  src={filledStar}
-                  alt="filled-star"
-                  style={{ width: 24, height: 24 }}
-                />
-              }
-              emptyIcon={
-                <img
-                  src={filledStar}
-                  alt="empty-star"
-                  style={{ width: 24, height: 24, opacity: 0.4 }}
-                />
-              }
-            />
-            <Typography sx={{ ml: "8px", opacity: 0.8, color: "white" }}>
-              {ratingLabels[rating]}
-            </Typography>
-          </Box>
-
-          {/* TextField for Review */}
-          <TextField
-            label="Write a review"
-            variant="outlined"
-            multiline
-            rows={4}
-            fullWidth
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            sx={{
-              "& .MuiInputLabel-root": { color: "#ff1744" }, // Label color
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#ff1744" }, // Default border color
-                "&:hover fieldset": { borderColor: "#ff8a80" }, // Hover border color
-                "&.Mui-focused fieldset": { borderColor: "#ff1744" }, // Focused border color
-              },
-              "& .MuiInputBase-input": { color: "white" }, // Input text color (for single-line)
-              "& .MuiInputBase-root textarea": { color: "white" }, // Textarea text color (for multiline)
-              mb: "16px",
-            }}
+        {/* Select Rating */}
+        <Box sx={{ display: "flex", mb: "10px" }}>
+          <Rating
+            name="custom-images"
+            value={rating}
+            onChange={(_, newValue) => setRating(newValue >= 1 ? newValue : 1)}
+            size="large"
+            icon={
+              <img
+                src={filledStar}
+                alt="filled-star"
+                style={{ width: 24, height: 24 }}
+              />
+            }
+            emptyIcon={
+              <img
+                src={filledStar}
+                alt="empty-star"
+                style={{ width: 24, height: 24, opacity: 0.4 }}
+              />
+            }
           />
+          <Typography sx={{ ml: "8px", opacity: 0.8, color: "white" }}>
+            {ratingLabels[rating]}
+          </Typography>
+        </Box>
 
-          {/* Submit Button */}
+        {/* TextField for Review */}
+        <TextField
+          label="Write a review"
+          variant="outlined"
+          multiline
+          rows={4}
+          fullWidth
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          sx={{
+            "& .MuiInputLabel-root": { color: "white" }, // Label color
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "#ff1744" }, // Default border color
+              "&:hover fieldset": { borderColor: "#ff8a80" }, // Hover border color
+              "&.Mui-focused fieldset": { borderColor: "#ff1744" }, // Focused border color
+            },
+            "& .MuiInputBase-input": { color: "white" }, // Input text color (for single-line)
+            "& .MuiInputBase-root textarea": { color: "white" }, // Textarea text color (for multiline)
+            mb: "16px",
+          }}
+        />
+
+        {/* Submit Button and Anonymous Checkbox */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Button
             type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ backgroundColor: "#ff1744" }}
+            sx={{
+              backgroundColor: "#ff1744",
+              textTransform: "none",
+              color: "white",
+            }}
           >
             Submit Review
           </Button>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={anonymous}
+                onChange={(e) => setAnonymous(e.target.checked)}
+                sx={{
+                  color: "#ff1744",
+                  "&.Mui-checked": { color: "#ff1744" },
+                }}
+              />
+            }
+            label={
+              <Typography variant="body1" sx={{ color: "white" }}>
+                Post Anonymously
+              </Typography>
+            }
+          />
         </Box>
-      )}
-    </div>
+      </Box>
+      <Box sx={{ mt: "10px" }}>
+        <Typography sx={{ color: "white" }}>{errorMessage}</Typography>
+      </Box>
+    </Box>
   );
 }

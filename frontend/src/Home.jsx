@@ -2,77 +2,36 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import axios from "axios";
-import PopularPlayers from "./PopularPlayers";
+import RecentReviews from "./RecentReviews";
 import MostReviewedPlayers from "./MostReviewedPlayers";
 
 export default function Home() {
-  const [reviews, setReviews] = useState([]);
+  const [recentPlayers, setRecentPlayers] = useState([]);
   const [mostReviewedPlayers, setMostReviewedPlayers] = useState([]);
-  const [popularPlayers, setPopularPlayers] = useState([]);
 
-  const getReviews = async () => {
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+  const getRecentPlayers = async () => {
     try {
-      const { data } = await axios.get(
-        "https://ywratemyplayersbackend2025.onrender.com/reviews/"
-      );
-      // console.log(data);
-
-      // Group reviews by player.current_name
-      const groupedReviews = data.reduce((acc, review) => {
-        const { current_name, avatar, region, server, level, job } =
-          review.player;
-
-        if (!acc[current_name]) {
-          acc[current_name] = {
-            playerInfo: { current_name, avatar, region, server, level, job },
-            reviews: [],
-          };
-        }
-
-        acc[current_name].reviews.push(review);
-        return acc;
-      }, {});
-
-      // Get Top n reviews
-      const getTopNReviews = (groupedReviews, n) => {
-        return Object.fromEntries(
-          Object.entries(groupedReviews)
-            .sort((a, b) => b[1].reviews.length - a[1].reviews.length) // Sort descending
-            .slice(0, n)
-        );
-      };
-
-      const getPopularPlayers = (reviews) => {
-        const now = new Date();
-        const cutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-        const uniquePlayers = new Map();
-
-        for (const review of reviews) {
-          const reviewDate = new Date(review.created_at);
-
-          if (reviewDate >= cutoff) {
-            const playerId = review.player.id;
-            if (!uniquePlayers.has(playerId)) {
-              uniquePlayers.set(playerId, review.player);
-            }
-            if (uniquePlayers.size === 10) break;
-          }
-        }
-
-        return Array.from(uniquePlayers.values());
-      };
-
-      setReviews(data);
-      setMostReviewedPlayers(getTopNReviews(groupedReviews, 10));
-      setPopularPlayers(getPopularPlayers(data));
+      const { data } = await axios.get(`${API_URL}/players/recent`);
+      setRecentPlayers(data);
     } catch (error) {
-      console.log("Error when fetching all reviews");
+      console.log("Error when fetching recent players");
+    }
+  };
+
+  const getMostReviewedPlayers = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/players/most-reviewed`);
+      setMostReviewedPlayers(data);
+    } catch (error) {
+      console.log("Error when fetching most reviewed players");
     }
   };
 
   useEffect(() => {
-    getReviews();
+    getRecentPlayers();
+    getMostReviewedPlayers();
   }, []);
 
   return (
@@ -87,7 +46,7 @@ export default function Home() {
           alignContent: "space-evenly",
         }}
       >
-        <PopularPlayers popularPlayers={popularPlayers} />
+        <RecentReviews recentPlayers={recentPlayers} />
         <MostReviewedPlayers mostReviewedPlayers={mostReviewedPlayers} />
       </Box>
     </Box>

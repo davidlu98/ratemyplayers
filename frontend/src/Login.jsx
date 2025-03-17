@@ -10,26 +10,21 @@ export default function Login({ setUser }) {
 
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+
   const login = async (event) => {
     event.preventDefault();
 
     try {
-      const { data } = await axios.post(
-        "https://ywratemyplayersbackend2025.onrender.com/login",
-        {
-          username,
-          password,
-        }
-      );
-      // console.log("data in login:", data);
+      const { data } = await axios.post(`${API_URL}/login`, {
+        username,
+        password,
+      });
       window.localStorage.setItem("token", data);
 
-      const response = await axios.get(
-        "https://ywratemyplayersbackend2025.onrender.com/account",
-        {
-          headers: { authorization: data },
-        }
-      );
+      const response = await axios.get(`${API_URL}/account`, {
+        headers: { authorization: data },
+      });
 
       setUser(response.data);
       navigate("/");
@@ -85,7 +80,7 @@ export default function Login({ setUser }) {
           <Button
             type="submit"
             variant="contained"
-            sx={{ backgroundColor: "#ff1744" }}
+            sx={{ backgroundColor: "#ff1744", textTransform: "none" }}
             fullWidth
           >
             Sign In

@@ -26,29 +26,38 @@ export default function SingleReview({ review }) {
     >
       <CardContent>
         {/* Star Rating & Date */}
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          {/* Star Rating */}
-          <Box display="flex">
-            {[...Array(5)].map((_, i) => (
-              <img
-                key={i}
-                src={filledStar}
-                alt="star"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  filter: i < review.rating ? "none" : "grayscale(100%)",
-                  opacity: i < review.rating ? 1 : 0.4, // Dim the stars not part of the rating
-                  pointerEvents: "none",
-                }}
-              />
-            ))}
-          </Box>
+        {/* <Box display="flex" alignItems="center" justifyContent="space-between"> */}
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* Star Rating */}
+            <Box display="flex">
+              {[...Array(5)].map((_, i) => (
+                <img
+                  key={i}
+                  src={filledStar}
+                  alt="star"
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    filter: i < review.rating ? "none" : "grayscale(100%)",
+                    opacity: i < review.rating ? 1 : 0.4, // Dim the stars not part of the rating
+                    pointerEvents: "none",
+                  }}
+                />
+              ))}
+            </Box>
 
-          {/* Date */}
-          <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            {formattedDate}
-          </Typography>
+            {/* Date */}
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              {formattedDate}
+            </Typography>
+          </Box>
+          {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}> */}
+          <Box sx={{ display: "flex", mt: "4px" }}>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              by {review.anonymous ? "anonymous" : review.user.username}
+            </Typography>
+          </Box>
         </Box>
 
         {/* Review Comment */}

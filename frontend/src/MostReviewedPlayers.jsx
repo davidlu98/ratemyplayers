@@ -23,32 +23,28 @@ export default function MostReviewedPlayers({ mostReviewedPlayers }) {
           width: "600px",
         }}
       >
-        {Object.entries(mostReviewedPlayers).map(
-          ([playerName, { playerInfo, _ }]) => {
-            return (
-              <Card
-                variant="outlined"
-                key={playerName}
-                sx={{ margin: "1px", bgcolor: "#222222" }}
-              >
-                <CardContent>
-                  <Link
-                    to={`/players/${playerInfo.region}/${playerInfo.current_name}`}
-                    style={{ color: "white", textDecoration: "none" }}
-                  >
-                    <Typography variant="body1">
-                      {playerInfo.current_name} - {playerInfo.job} -{" "}
-                      {playerInfo.level} - {playerInfo.server} -{" "}
-                      <span style={{ opacity: "0.8" }}>
-                        ({playerInfo.region})
-                      </span>
-                    </Typography>
-                  </Link>
-                </CardContent>
-              </Card>
-            );
-          }
-        )}
+        {mostReviewedPlayers.map((player, index) => {
+          return (
+            <Card
+              variant="outlined"
+              key={index}
+              sx={{ margin: "1px", bgcolor: "#222222" }}
+            >
+              <CardContent>
+                <Link
+                  to={`/players/${player.region}/${player.current_name}`}
+                  style={{ color: "white", textDecoration: "none" }}
+                >
+                  <Typography variant="body1">
+                    {player.current_name} - {player.job} - {player.level} -{" "}
+                    {player.server} -{" "}
+                    <span style={{ opacity: "0.8" }}>({player.region})</span>
+                  </Typography>
+                </Link>
+              </CardContent>
+            </Card>
+          );
+        })}
       </Box>
     </Box>
   );
