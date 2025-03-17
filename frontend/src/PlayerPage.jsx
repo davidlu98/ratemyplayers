@@ -55,7 +55,7 @@ export default function PlayerPage() {
   const fetchPlayerReviews = async () => {
     try {
       const { data } = await axios.get(`${API_URL}/reviews/${playerData.id}`);
-      // console.log(data);
+      console.log(data);
 
       // Reset rating counts before recalculating
       const newCounts = {

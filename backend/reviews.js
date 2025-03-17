@@ -40,33 +40,41 @@ router.get("/:reviewId/votes", async (req, res, next) => {
 
 router.get("/:player_id", async (req, res, next) => {
   try {
-    const reviews = await prisma.review.findMany({
+    const allReviews = await prisma.review.findMany({
       where: {
         player_id: req.params.player_id,
       },
-      select: {
-        id: true,
-        player_id: true,
-        rating: true,
-        comment: true,
-        created_at: true,
-        anonymous: true,
-        player: true,
-        user: {
-          select: { username: true },
-        },
-      },
-      orderBy: {
-        created_at: "desc",
-      },
     });
 
-    const sanitizedReviews = reviews.map((review) => ({
-      ...review,
-      user: review.anonymous ? null : review.user,
-    }));
+    res.send(allReviews);
 
-    res.send(sanitizedReviews);
+    // const reviews = await prisma.review.findMany({
+    //   where: {
+    //     player_id: req.params.player_id,
+    //   },
+    //   select: {
+    //     id: true,
+    //     player_id: true,
+    //     rating: true,
+    //     comment: true,
+    //     created_at: true,
+    //     anonymous: true,
+    //     player: true,
+    //     user: {
+    //       select: { username: true },
+    //     },
+    //   },
+    //   orderBy: {
+    //     created_at: "desc",
+    //   },
+    // });
+
+    // const sanitizedReviews = reviews.map((review) => ({
+    //   ...review,
+    //   user: review.anonymous ? null : review.user,
+    // }));
+
+    // res.send(sanitizedReviews);
   } catch (error) {
     next(error);
   }
