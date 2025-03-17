@@ -44,6 +44,11 @@ router.get("/:player_id", async (req, res, next) => {
       where: {
         player_id: req.params.player_id,
       },
+      select: {
+        id: true,
+        comment: true,
+        anonymous: true,
+      },
     });
 
     res.send(allReviews);
