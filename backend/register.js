@@ -10,6 +10,19 @@ const prisma = new PrismaClient();
 router.post("/", async (req, res, next) => {
   try {
     const { username, password } = req.body;
+
+    if (username.length < 4 || username.length > 12) {
+      return res
+        .status(400)
+        .json("Username must be between 4 and 12 characters.");
+    }
+
+    if (password.length < 6 || username.length > 255) {
+      return res
+        .status(400)
+        .json("Password must be at least 6 characters long.");
+    }
+
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     const newUser = await prisma.user.create({
@@ -22,7 +35,10 @@ router.post("/", async (req, res, next) => {
     const token = jwt.sign(newUser, "LUNA");
     return res.send(token);
   } catch (error) {
-    next(error);
+    if (error.code === "P2002") {
+      return res.status(400).json("Username is already taken.");
+    }
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 

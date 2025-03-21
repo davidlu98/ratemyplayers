@@ -48,8 +48,8 @@ model Review {
 
 model User {
   id         String   @id @default(uuid())
-  username   String   @unique
-  password   String
+  username   String   @unique @db.VarChar(12)
+  password   String   @unique @db.VarChar(255)
   created_at DateTime @default(now())
   reviews    Review[]
   Vote       Vote[]

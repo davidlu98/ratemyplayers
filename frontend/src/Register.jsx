@@ -8,35 +8,44 @@ export default function Register({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   const register = async (event) => {
     event.preventDefault();
+    setErrorMessage("");
 
-    const { data } = await axios.post(`${API_URL}/register`, {
-      username,
-      password,
-    });
-    window.localStorage.setItem("token", data);
+    try {
+      const { data } = await axios.post(`${API_URL}/register`, {
+        username,
+        password,
+      });
 
-    // console.log(data);
+      window.localStorage.setItem("token", data);
 
-    const response = await axios.get(`${API_URL}/account`, {
-      headers: { authorization: data },
-    });
+      const response = await axios.get(`${API_URL}/account`, {
+        headers: { authorization: data },
+      });
 
-    console.log(response);
-
-    setUser(response.data);
-    navigate("/");
+      setUser(response.data);
+      navigate("/");
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data); // Display server error
+      } else {
+        setErrorMessage("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
     <Box
       sx={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         marginTop: "200px",
@@ -93,6 +102,9 @@ export default function Register({ setUser }) {
           </Link>
         </Typography>
       </Paper>
+      <Box sx={{ mt: "10px" }}>
+        <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
+      </Box>
     </Box>
   );
 }

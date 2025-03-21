@@ -18,7 +18,7 @@ router.post("/", async (req, res, next) => {
     });
 
     if (!user) {
-      res.sendStatus(401);
+      return res.status(401).json("Invalid username or password.");
     } else {
       const isCorrectPassword = bcrypt.compareSync(password, user.password);
 
@@ -26,11 +26,11 @@ router.post("/", async (req, res, next) => {
         const token = jwt.sign(user, "LUNA");
         res.send(token);
       } else {
-        res.sendStatus(401);
+        return res.status(401).json("Invalid username or password.");
       }
     }
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 

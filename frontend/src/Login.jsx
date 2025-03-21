@@ -8,18 +8,22 @@ export default function Login({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   const login = async (event) => {
     event.preventDefault();
+    setErrorMessage("");
 
     try {
       const { data } = await axios.post(`${API_URL}/login`, {
         username,
         password,
       });
+
       window.localStorage.setItem("token", data);
 
       const response = await axios.get(`${API_URL}/account`, {
@@ -29,7 +33,11 @@ export default function Login({ setUser }) {
       setUser(response.data);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      if (error.response) {
+        setErrorMessage(error.response.data); // Display server error
+      } else {
+        setErrorMessage("An unexpected error occurred.");
+      }
     }
   };
 
@@ -37,6 +45,7 @@ export default function Login({ setUser }) {
     <Box
       sx={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         marginTop: "200px",
@@ -93,6 +102,9 @@ export default function Login({ setUser }) {
           </Link>
         </Typography>
       </Paper>
+      <Box sx={{ mt: "10px" }}>
+        <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
+      </Box>
     </Box>
   );
 }
