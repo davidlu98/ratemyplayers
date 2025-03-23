@@ -53,7 +53,7 @@ function App() {
         <Route path="/players/:region/:name" element={<PlayerPage />} />
         <Route
           path="/write-review/:region/:playerName/:playerId"
-          element={<CreateReview user={user} />}
+          element={<CreateReview />}
         />
       </Routes>
     </div>

@@ -15,7 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const filledStar = "/filled-star2.png";
 
-export default function CreateReview({ user }) {
+export default function CreateReview() {
   const navigate = useNavigate();
 
   const { region, playerName, playerId } = useParams();
@@ -38,31 +38,27 @@ export default function CreateReview({ user }) {
 
   const submitReview = async (event) => {
     event.preventDefault();
-
-    if (!user) {
-      setErrorMessage("Must be logged in to submit a review");
-      return;
-    }
+    setErrorMessage("");
 
     const token = window.localStorage.getItem("token");
 
-    if (token) {
-      if (comment.trim() !== "") {
-        try {
-          await axios.post(
-            `${API_URL}/reviews/`,
-            {
-              player_id: playerId,
-              rating,
-              comment: comment.trim(),
-              anonymous,
-            },
-            { headers: { authorization: token } }
-          );
-          navigate(`/players/${region}/${playerName}`);
-        } catch (error) {
-          console.log("Error when submitting review");
-        }
+    try {
+      await axios.post(
+        `${API_URL}/reviews/`,
+        {
+          player_id: playerId,
+          rating,
+          comment,
+          anonymous,
+        },
+        { headers: { authorization: token } }
+      );
+      navigate(`/players/${region}/${playerName}`);
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data); // Display server error
+      } else {
+        setErrorMessage("An unexpected error occurred.");
       }
     }
   };
@@ -174,7 +170,7 @@ export default function CreateReview({ user }) {
         </Box>
       </Box>
       <Box sx={{ mt: "10px" }}>
-        <Typography sx={{ color: "white" }}>{errorMessage}</Typography>
+        <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
       </Box>
     </Box>
   );

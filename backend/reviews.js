@@ -40,19 +40,6 @@ router.get("/:reviewId/votes", async (req, res, next) => {
 
 router.get("/:player_id", async (req, res, next) => {
   try {
-    // const allReviews = await prisma.review.findMany({
-    //   where: {
-    //     player_id: req.params.player_id,
-    //   },
-    //   select: {
-    //     id: true,
-    //     comment: true,
-    //     anonymous: true,
-    //   },
-    // });
-
-    // res.send(allReviews);
-
     const reviews = await prisma.review.findMany({
       where: {
         player_id: req.params.player_id,
@@ -91,21 +78,25 @@ router.post("/", async (req, res, next) => {
     const user = jwt.decode(token, "LUNA");
 
     if (user) {
-      const review = await prisma.review.create({
+      if (req.body.comment.trim() === "") {
+        return res.status(400).json("Review must not be empty.");
+      }
+
+      await prisma.review.create({
         data: {
           user_id: user.id,
           player_id: req.body.player_id,
           rating: Number(req.body.rating),
-          comment: req.body.comment,
+          comment: req.body.comment.trim(),
           anonymous: req.body.anonymous,
         },
       });
-      return res.send(review);
+      return res.sendStatus(200);
     } else {
-      return res.sendStatus(401);
+      return res.status(401).json("Must be logged in to submit a review.");
     }
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 
