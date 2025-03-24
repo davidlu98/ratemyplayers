@@ -44,6 +44,10 @@ model Review {
   player     Player   @relation(fields: [player_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   votes      Vote[]
+
+  // New fields to track upvotes and downvotes
+  upvotes   Int @default(0)
+  downvotes Int @default(0)
 }
 
 model User {

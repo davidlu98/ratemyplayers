@@ -1,10 +1,48 @@
 import React from "react";
-import SingleReview from "./SingleReview";
+import { useState, useEffect } from "react";
 import { Typography, Box, Card } from "@mui/material";
+import axios from "axios";
+import SingleReview from "./SingleReview";
 import ReviewVote from "./ReviewVote";
 import SortMenu from "./SortMenu";
 
-export default function PlayerReviews({ reviews, setSortType }) {
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+export default function PlayerReviews({ playerId }) {
+  const [reviews, setReviews] = useState([]);
+
+  const [sortOptions, setSortOptions] = useState({
+    sortBy: "newest",
+    rating: "all",
+  });
+
+  const handleSortChange = (sortBy, rating) => {
+    setSortOptions({ sortBy, rating });
+  };
+
+  const fetchPlayerReviews = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/reviews/${playerId}`, {
+        params: {
+          sortBy: sortOptions.sortBy,
+          rating: sortOptions.rating,
+        },
+      });
+
+      // console.log(data);
+
+      setReviews(data);
+    } catch (error) {
+      console.log("Error when fetching reviews in PlayerReviews");
+    }
+  };
+
+  useEffect(() => {
+    if (playerId) {
+      fetchPlayerReviews();
+    }
+  }, [playerId, sortOptions]);
+
   return (
     <Box
       sx={{
@@ -30,7 +68,7 @@ export default function PlayerReviews({ reviews, setSortType }) {
         </Typography>
       </Box>
 
-      <SortMenu setSortType={setSortType} />
+      <SortMenu onSortChange={handleSortChange} />
 
       <Box sx={{ mb: "10px" }}>
         {reviews.map((review, index) => (

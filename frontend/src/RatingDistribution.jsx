@@ -1,24 +1,70 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
+import axios from "axios";
 
-const RatingDistribution = ({ ratingCounts }) => {
-  const maxCount = Math.max(...Object.values(ratingCounts), 1); // Prevent division by zero
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const ratingLabels = {
-    5: "Awesome",
-    4: "Great",
-    3: "Good",
-    2: "OK",
-    1: "Awful",
+const ratingLabels = {
+  5: "Awesome",
+  4: "Great",
+  3: "Good",
+  2: "OK",
+  1: "Awful",
+};
+
+const ratingColors = {
+  5: "#007bff", // Blue (Awesome)
+  4: "#28a745", // Green (Great)
+  3: "#ffc107", // Yellow (Good)
+  2: "#fd7e14", // Orange (OK)
+  1: "#dc3545", // Red (Awful)
+};
+
+const RatingDistribution = ({ playerId }) => {
+  const [ratingCounts, setRatingCounts] = useState({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  });
+
+  const [maxCount, setMaxCount] = useState(0);
+
+  const fetchPlayerReviews = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/reviews/${playerId}`, {
+        params: {
+          sortBy: "newest",
+          rating: "all",
+        },
+      });
+
+      const newCounts = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      };
+
+      data.forEach((review) => {
+        if (newCounts.hasOwnProperty(review.rating)) {
+          newCounts[review.rating] += 1;
+        }
+      });
+
+      setRatingCounts(newCounts);
+      setMaxCount(Math.max(...Object.values(newCounts), 1));
+    } catch (error) {
+      console.log("Error when fetching reviews in RatingDistribution");
+    }
   };
 
-  const ratingColors = {
-    5: "#007bff", // Blue (Awesome)
-    4: "#28a745", // Green (Great)
-    3: "#ffc107", // Yellow (Good)
-    2: "#fd7e14", // Orange (OK)
-    1: "#dc3545", // Red (Awful)
-  };
+  useEffect(() => {
+    fetchPlayerReviews();
+  }, []);
 
   return (
     <Box
@@ -27,7 +73,6 @@ const RatingDistribution = ({ ratingCounts }) => {
         flexDirection: "column",
         alignItems: "center",
         width: "325px",
-        // width: "100%",
         bgcolor: "#1a1a1a",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
         padding: "16px",

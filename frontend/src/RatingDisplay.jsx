@@ -1,7 +1,40 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
+import axios from "axios";
 
-export default function RatingDisplay({ rating, totalRatings }) {
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+export default function RatingDisplay({ playerId }) {
+  const [averageRating, setAverageRating] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+
+  const fetchPlayerReviews = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/reviews/${playerId}`, {
+        params: {
+          sortBy: "newest",
+          rating: "all",
+        },
+      });
+
+      let totalRating = 0;
+
+      data.forEach((review) => {
+        totalRating += review.rating;
+      });
+
+      setReviewCount(data.length);
+      setAverageRating(data.length > 0 ? totalRating / data.length : 0);
+    } catch (error) {
+      console.log("Error when fetching reviews in RatingDisplay");
+    }
+  };
+
+  useEffect(() => {
+    fetchPlayerReviews();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -17,7 +50,7 @@ export default function RatingDisplay({ rating, totalRatings }) {
         variant="h2"
         sx={{ fontWeight: "bold", display: "inline", color: "white" }}
       >
-        {rating}
+        {averageRating.toFixed(1)}
       </Typography>
       <Typography
         variant="h6"
@@ -44,7 +77,7 @@ export default function RatingDisplay({ rating, totalRatings }) {
       >
         Overall Rating Based on {""}
         <span style={{ textDecoration: "underline" }}>
-          {totalRatings} {totalRatings == 1 ? "rating" : "ratings"}
+          {reviewCount} {reviewCount == 1 ? "rating" : "ratings"}
         </span>
       </Typography>
     </Box>

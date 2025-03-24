@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 // all routes have prefix /vote
 
 router.post("/", async (req, res, next) => {
-  try {
-    const token = req.headers.authorization;
-    const user = jwt.decode(token, "LUNA");
+  const token = req.headers.authorization;
+  const user = jwt.decode(token, "LUNA");
 
+  try {
     if (user) {
       const existingVote = await prisma.vote.findFirst({
         where: {
@@ -18,34 +18,66 @@ router.post("/", async (req, res, next) => {
         },
       });
 
-      if (existingVote) {
-        // If user changing upvote -> downvote or downvote -> upvote
-        if (existingVote.value !== Number(req.body.value)) {
-          await prisma.vote.update({
+      await prisma.$transaction(async (tx) => {
+        if (!existingVote) {
+          await tx.vote.create({
+            data: {
+              user_id: user.id,
+              review_id: req.body.review_id,
+              value: Number(req.body.value),
+            },
+          });
+
+          await tx.review.update({
+            where: {
+              id: req.body.review_id,
+            },
+            data: {
+              upvotes: { increment: Number(req.body.value) === 1 ? 1 : 0 },
+              downvotes: { increment: Number(req.body.value) === -1 ? 1 : 0 },
+            },
+          });
+        } else if (existingVote.value !== Number(req.body.value)) {
+          // If user changing upvote -> downvote or downvote -> upvote
+          await tx.vote.update({
             where: { id: existingVote.id },
             data: { value: Number(req.body.value) },
           });
+
+          await tx.review.update({
+            where: { id: req.body.review_id },
+            data: {
+              upvotes: {
+                increment: Number(req.body.value) === 1 ? 1 : -1,
+              },
+              downvotes: {
+                increment: Number(req.body.value) === -1 ? 1 : -1,
+              },
+            },
+          });
         } else {
-          await prisma.vote.delete({
+          // If user wants to remove a vote upvote -> upvote or downvote -> downvote
+          await tx.vote.delete({
             where: { id: existingVote.id },
           });
+
+          await tx.review.update({
+            where: { id: req.body.review_id },
+            data: {
+              upvotes: existingVote.value === 1 ? { decrement: 1 } : undefined,
+              downvotes:
+                existingVote.value === -1 ? { decrement: 1 } : undefined,
+            },
+          });
         }
-      } else {
-        await prisma.vote.create({
-          data: {
-            user_id: user.id,
-            review_id: req.body.review_id,
-            value: Number(req.body.value),
-          },
-        });
-      }
+      });
 
       return res.sendStatus(201);
     } else {
       return res.sendStatus(401);
     }
   } catch (error) {
-    return res.sendStatus(500);
+    res.sendStatus(500);
   }
 });
 

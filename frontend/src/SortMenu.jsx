@@ -1,41 +1,77 @@
-import React from "react";
-import { useState } from "react";
-import { Menu, MenuItem, Button } from "@mui/material";
-import SortIcon from "@mui/icons-material/Sort";
+import React, { useState } from "react";
+import { FormControl, Select, MenuItem, Box } from "@mui/material";
 
-export default function SortMenu({ setSortType }) {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+const SortMenu = ({ onSortChange }) => {
+  const [sortBy, setSortBy] = useState("newest");
+  const [ratingFilter, setRatingFilter] = useState("all");
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
+    onSortChange(event.target.value, ratingFilter);
   };
 
-  const handleClose = (sortType) => {
-    setAnchorEl(null);
-    if (sortType) setSortType(sortType);
+  const handleRatingChange = (event) => {
+    setRatingFilter(event.target.value);
+    onSortChange(sortBy, event.target.value);
   };
 
   return (
-    <div style={{}}>
-      <Button
-        onClick={handleClick}
-        startIcon={<SortIcon />}
-        sx={{ color: "white", textTransform: "none" }}
-      >
-        Sort by
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "sort-button",
-        }}
-      >
-        <MenuItem onClick={() => handleClose("top")}>Top comments</MenuItem>
-        <MenuItem onClick={() => handleClose("newest")}>Newest first</MenuItem>
-      </Menu>
-    </div>
+    <Box sx={{ display: "flex", gap: 1, mt: "6px" }}>
+      {/* Sorting Dropdown */}
+      <FormControl size="small">
+        <Select
+          value={sortBy}
+          onChange={handleSortChange}
+          sx={{
+            color: "white", // Selected text color
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ff1744",
+            }, // Default border
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ff8a80",
+            }, // Hover border
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ff1744",
+            }, // Focus border
+            "& .MuiSvgIcon-root": { color: "#ff1744" }, // Arrow icon color
+          }}
+        >
+          <MenuItem value="newest">Newest first</MenuItem>
+          <MenuItem value="oldest">Oldest first</MenuItem>
+          <MenuItem value="most_upvotes">Most upvotes</MenuItem>
+          <MenuItem value="most_downvotes">Most downvotes</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* Rating Filter Dropdown */}
+      <FormControl size="small">
+        <Select
+          value={ratingFilter}
+          onChange={handleRatingChange}
+          sx={{
+            color: "white", // Selected text color
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ff1744",
+            }, // Default border
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ff8a80",
+            }, // Hover border
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#ff1744",
+            }, // Focus border
+            "& .MuiSvgIcon-root": { color: "#ff1744" }, // Arrow icon color
+          }}
+        >
+          <MenuItem value="all">All ratings</MenuItem>
+          <MenuItem value="5">5 stars</MenuItem>
+          <MenuItem value="4">4 stars</MenuItem>
+          <MenuItem value="3">3 stars</MenuItem>
+          <MenuItem value="2">2 stars</MenuItem>
+          <MenuItem value="1">1 star</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
   );
-}
+};
+
+export default SortMenu;

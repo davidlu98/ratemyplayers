@@ -39,11 +39,24 @@ router.get("/:reviewId/votes", async (req, res, next) => {
 });
 
 router.get("/:player_id", async (req, res, next) => {
+  const { player_id } = req.params;
+  const { sortBy, rating } = req.query;
+
+  let orderBy = { created_at: "desc" }; // By default, Newest first
+  if (sortBy === "oldest") orderBy = { created_at: "asc" };
+  if (sortBy === "most_upvotes")
+    orderBy = [{ upvotes: "desc" }, { created_at: "desc" }];
+  if (sortBy === "most_downvotes")
+    orderBy = [{ downvotes: "desc" }, { created_at: "desc" }];
+
+  let where = { player_id };
+  if (rating !== "all") {
+    where = { player_id, rating: parseInt(rating) };
+  }
+
   try {
     const reviews = await prisma.review.findMany({
-      where: {
-        player_id: req.params.player_id,
-      },
+      where,
       select: {
         id: true,
         player_id: true,
@@ -56,9 +69,7 @@ router.get("/:player_id", async (req, res, next) => {
           select: { username: true },
         },
       },
-      orderBy: {
-        created_at: "desc",
-      },
+      orderBy,
     });
 
     const sanitizedReviews = reviews.map((review) => ({
@@ -68,7 +79,7 @@ router.get("/:player_id", async (req, res, next) => {
 
     res.send(sanitizedReviews);
   } catch (error) {
-    next(error);
+    res.send(error);
   }
 });
 
