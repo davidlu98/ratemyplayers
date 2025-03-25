@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Typography, Box, Card } from "@mui/material";
+import { Typography, Box, Card, Pagination } from "@mui/material";
 import axios from "axios";
 import SingleReview from "./SingleReview";
 import ReviewVote from "./ReviewVote";
@@ -10,6 +10,9 @@ const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function PlayerReviews({ playerId }) {
   const [reviews, setReviews] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [page, setPage] = useState(1);
 
   const [sortOptions, setSortOptions] = useState({
     sortBy: "newest",
@@ -22,16 +25,21 @@ export default function PlayerReviews({ playerId }) {
 
   const fetchPlayerReviews = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/reviews/${playerId}`, {
-        params: {
-          sortBy: sortOptions.sortBy,
-          rating: sortOptions.rating,
-        },
-      });
+      const { data } = await axios.get(
+        `${API_URL}/reviews/${playerId}?page=${page}`,
+        {
+          params: {
+            sortBy: sortOptions.sortBy,
+            rating: sortOptions.rating,
+          },
+        }
+      );
 
-      // console.log(data);
+      console.log(data);
 
-      setReviews(data);
+      setReviews(data.reviews);
+      setTotalPages(data.totalPages);
+      setTotalReviews(data.totalReviews);
     } catch (error) {
       console.log("Error when fetching reviews in PlayerReviews");
     }
@@ -41,57 +49,76 @@ export default function PlayerReviews({ playerId }) {
     if (playerId) {
       fetchPlayerReviews();
     }
-  }, [playerId, sortOptions]);
+  }, [playerId, sortOptions, page]);
 
   return (
     <Box
       sx={{
-        width: "100%",
+        width: "700px",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
       }}
     >
       <Box
         sx={{
-          textAlign: "center",
-          marginTop: "16px",
-          backgroundColor: "#1a1a1a",
-          boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
-          padding: "10px",
-          maxWidth: "660px",
-          width: "660px",
+          margin: "8px",
+          maxWidth: "280px",
+          width: "280px",
         }}
       >
-        <Typography variant="h2" sx={{ fontWeight: "bold", color: "white" }}>
-          Player Reviews
-        </Typography>
+        <SortMenu onSortChange={handleSortChange} />
       </Box>
-
-      <SortMenu onSortChange={handleSortChange} />
-
-      <Box sx={{ mb: "10px" }}>
+      <Typography variant="body2" sx={{ color: "white", ml: "10px" }}>
+        {totalReviews} Player {totalReviews == 1 ? "Review" : "Reviews"}
+      </Typography>
+      <Box
+        sx={{
+          mb: "10px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         {reviews.map((review, index) => (
-          <div key={index} style={{ display: "flex", alignItems: "center" }}>
-            <Card
-              variant="outlined"
-              sx={{
-                marginTop: "10px",
-                width: "100%", // Ensure full width,
-                display: "flex",
-                justifyContent: "flex-start", // Align content properly
-                backgroundColor: "#1a1a1a",
-                padding: "10px",
-                flexDirection: "column",
-              }}
-            >
-              {/* Review Content on the Left */}
-              <SingleReview review={review} />
-              {/* Vote Component on the Right */}
-              <ReviewVote reviewId={review.id} />
-            </Card>
-          </div>
+          <Card
+            key={index}
+            variant="outlined"
+            sx={{
+              marginTop: "10px",
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "#1a1a1a",
+              padding: "2px",
+            }}
+          >
+            {/* Review Content on the Left */}
+            <SingleReview review={review} />
+            {/* Vote Component on the Right */}
+            <ReviewVote reviewId={review.id} />
+          </Card>
         ))}
+
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={(_, value) => setPage(value)}
+          color="primary"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#666", // Default color
+            },
+            "& .Mui-selected": {
+              bgcolor: "#1976d2 !important", // Selected page color (blue)
+              color: "white !important",
+              fontWeight: "bold",
+              borderRadius: "8px",
+            },
+            "& .MuiPaginationItem-root:hover": {
+              bgcolor: "#e3f2fd", // Light blue on hover
+            },
+            mt: 2,
+          }}
+        />
       </Box>
     </Box>
   );

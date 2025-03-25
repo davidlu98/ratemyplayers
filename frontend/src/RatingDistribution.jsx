@@ -34,12 +34,7 @@ const RatingDistribution = ({ playerId }) => {
 
   const fetchPlayerReviews = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/reviews/${playerId}`, {
-        params: {
-          sortBy: "newest",
-          rating: "all",
-        },
-      });
+      const { data } = await axios.get(`${API_URL}/reviews/${playerId}/all`);
 
       const newCounts = {
         1: 0,

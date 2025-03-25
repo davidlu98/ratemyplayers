@@ -38,9 +38,33 @@ router.get("/:reviewId/votes", async (req, res, next) => {
   }
 });
 
-router.get("/:player_id", async (req, res, next) => {
+router.get("/:player_id/all", async (req, res) => {
+  const { player_id } = req.params;
+
+  try {
+    const reviews = await prisma.review.findMany({
+      where: {
+        player_id,
+      },
+      select: {
+        rating: true,
+      },
+    });
+
+    res.send(reviews);
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+router.get("/:player_id", async (req, res) => {
   const { player_id } = req.params;
   const { sortBy, rating } = req.query;
+
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 10;
+
+  console.log(page);
 
   let orderBy = { created_at: "desc" }; // By default, Newest first
   if (sortBy === "oldest") orderBy = { created_at: "asc" };
@@ -55,7 +79,13 @@ router.get("/:player_id", async (req, res, next) => {
   }
 
   try {
+    const totalReviews = await prisma.review.count({
+      where,
+    });
+
     const reviews = await prisma.review.findMany({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       where,
       select: {
         id: true,
@@ -77,7 +107,13 @@ router.get("/:player_id", async (req, res, next) => {
       user: review.anonymous ? null : review.user,
     }));
 
-    res.send(sanitizedReviews);
+    res.json({
+      reviews: sanitizedReviews,
+      totalPages: Math.ceil(totalReviews / pageSize),
+      totalReviews,
+    });
+
+    // res.json(sanitizedReviews);
   } catch (error) {
     res.send(error);
   }

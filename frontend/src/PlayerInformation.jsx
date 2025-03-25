@@ -10,8 +10,8 @@ export default function PlayerInformation({ playerData }) {
         color: "white",
         textAlign: "center",
         padding: "20px",
-        maxWidth: "250px",
-        width: "250px",
+        maxWidth: "283px",
+        width: "283px",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
       }}
     >

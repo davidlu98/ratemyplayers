@@ -1,13 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Box, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import axios from "axios";
 
 import PlayerReviews from "./PlayerReviews";
 import RatingDistribution from "./RatingDistribution";
 import PlayerInformation from "./PlayerInformation";
-import RatingDisplay from "./RatingDisplay";
+import OverallRating from "./OverallRating";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -60,31 +60,13 @@ export default function PlayerPage() {
         <div
           style={{
             display: "flex",
-            justifyContent: "space-evenly",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
           <div>
-            <div>
-              <Box
-                sx={{
-                  textAlign: "center",
-                  marginTop: "16px",
-                  backgroundColor: "#1a1a1a",
-                  boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
-                  padding: "10px",
-                  maxWidth: "627px",
-                  width: "627px",
-                  marginBottom: "10px",
-                }}
-              >
-                <Typography
-                  variant="h2"
-                  sx={{ fontWeight: "bold", color: "white" }}
-                >
-                  Player Overview
-                </Typography>
-              </Box>
-              <RatingDisplay playerId={playerData.id} />
+            <div style={{ marginTop: "10px" }}>
+              <OverallRating playerId={playerData.id} />
               <div style={{ display: "flex" }}>
                 <PlayerInformation playerData={playerData} />
                 <RatingDistribution playerId={playerData.id} />
@@ -97,7 +79,7 @@ export default function PlayerPage() {
               sx={{
                 backgroundColor: "#ff1744",
                 textTransform: "none",
-                mt: "10px",
+                mt: "12px",
               }}
             >
               Write a review

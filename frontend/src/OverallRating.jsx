@@ -11,12 +11,7 @@ export default function RatingDisplay({ playerId }) {
 
   const fetchPlayerReviews = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/reviews/${playerId}`, {
-        params: {
-          sortBy: "newest",
-          rating: "all",
-        },
-      });
+      const { data } = await axios.get(`${API_URL}/reviews/${playerId}/all`);
 
       let totalRating = 0;
 
@@ -27,7 +22,7 @@ export default function RatingDisplay({ playerId }) {
       setReviewCount(data.length);
       setAverageRating(data.length > 0 ? totalRating / data.length : 0);
     } catch (error) {
-      console.log("Error when fetching reviews in RatingDisplay");
+      console.log("Error when fetching reviews in OverallRating");
     }
   };
 
@@ -42,8 +37,8 @@ export default function RatingDisplay({ playerId }) {
         backgroundColor: "#1a1a1a",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
         padding: "10px",
-        maxWidth: "627px",
-        width: "627px",
+        maxWidth: "660px",
+        width: "660px",
       }}
     >
       <Typography
@@ -69,8 +64,6 @@ export default function RatingDisplay({ playerId }) {
       <Typography
         variant="body1"
         sx={{
-          fontWeight: "bold",
-          marginTop: "8px",
           color: "white",
           opacity: "0.8",
         }}
