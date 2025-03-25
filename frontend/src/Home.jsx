@@ -36,14 +36,12 @@ export default function Home() {
 
   return (
     <Box>
-      <Typography sx={{ color: "white", textAlign: "center", margin: "10px" }}>
-        Rate My Players
-      </Typography>
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
           alignContent: "space-evenly",
+          mt: 2,
         }}
       >
         <RecentReviews recentPlayers={recentPlayers} />

@@ -16,7 +16,14 @@ const SortMenu = ({ onSortChange }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", gap: 1, mt: "6px" }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        mt: "6px",
+        width: "300px",
+      }}
+    >
       {/* Sorting Dropdown */}
       <FormControl size="small">
         <Select
