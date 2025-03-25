@@ -35,8 +35,6 @@ export default function PlayerReviews({ playerId }) {
         }
       );
 
-      console.log(data);
-
       setReviews(data.reviews);
       setTotalPages(data.totalPages);
       setTotalReviews(data.totalReviews);

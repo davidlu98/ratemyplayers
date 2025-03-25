@@ -64,8 +64,6 @@ router.get("/:player_id", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = 10;
 
-  console.log(page);
-
   let orderBy = { created_at: "desc" }; // By default, Newest first
   if (sortBy === "oldest") orderBy = { created_at: "asc" };
   if (sortBy === "most_upvotes")
@@ -112,8 +110,6 @@ router.get("/:player_id", async (req, res) => {
       totalPages: Math.ceil(totalReviews / pageSize),
       totalReviews,
     });
-
-    // res.json(sanitizedReviews);
   } catch (error) {
     res.send(error);
   }

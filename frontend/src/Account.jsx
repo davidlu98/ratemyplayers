@@ -74,8 +74,7 @@ export default function Account({ user }) {
             bgcolor: "#1a1a1a",
             boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
             padding: "10px",
-            maxWidth: "865px",
-            width: "100%",
+            width: "964px",
           }}
         >
           <Typography variant="h2" sx={{ fontWeight: "bold", color: "white" }}>
@@ -86,7 +85,7 @@ export default function Account({ user }) {
           sx={{
             display: "flex",
             flexWrap: "wrap",
-            width: "890px",
+            width: "990px",
           }}
         >
           {Object.entries(reviews).map(
