@@ -13,7 +13,7 @@ import {
 
 import SearchIcon from "@mui/icons-material/Search";
 
-const SearchBar = () => {
+const SearchBar = ({ isMobile, handleMenuClose }) => {
   const [playerName, setPlayerName] = useState("");
   const [region, setRegion] = useState("NA");
   const navigate = useNavigate();
@@ -21,10 +21,16 @@ const SearchBar = () => {
   const searchPlayer = (event) => {
     event.preventDefault();
 
-    if (playerName.trim() !== "") {
-      navigate(`/players/${region}/${playerName}`);
-      setPlayerName("");
+    if (playerName.trim() === "") {
+      return;
     }
+
+    if (isMobile) {
+      handleMenuClose();
+    }
+
+    navigate(`/players/${region}/${playerName}`);
+    setPlayerName("");
   };
 
   return (
@@ -75,7 +81,7 @@ const SearchBar = () => {
             variant="outlined"
             size="small"
             sx={{
-              width: 200,
+              width: { xs: "50%", xm: "200px" },
               "& .MuiInputLabel-root": { color: "white" }, // Label color
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#ff1744" }, // Default border color

@@ -1,15 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import axios from "axios";
 import RecentReviews from "./RecentReviews";
 import MostReviewedPlayers from "./MostReviewedPlayers";
 
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
 export default function Home() {
   const [recentPlayers, setRecentPlayers] = useState([]);
   const [mostReviewedPlayers, setMostReviewedPlayers] = useState([]);
-
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
 
   const getRecentPlayers = async () => {
     try {
@@ -35,18 +35,16 @@ export default function Home() {
   }, []);
 
   return (
-    <Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "space-evenly",
-          mt: 2,
-        }}
-      >
-        <RecentReviews recentPlayers={recentPlayers} />
-        <MostReviewedPlayers mostReviewedPlayers={mostReviewedPlayers} />
-      </Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        justifyContent: "center",
+        mt: 2,
+      }}
+    >
+      <RecentReviews recentPlayers={recentPlayers} />
+      <MostReviewedPlayers mostReviewedPlayers={mostReviewedPlayers} />
     </Box>
   );
 }

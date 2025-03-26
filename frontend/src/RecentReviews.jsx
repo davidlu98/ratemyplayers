@@ -10,7 +10,7 @@ export default function RecentReviews({ recentPlayers }) {
         flexDirection: "column",
         alignItems: "center",
         bgcolor: "#1F1F1F",
-        margin: "px",
+        mb: 2,
       }}
     >
       <Typography sx={{ color: "white", margin: "10px" }}>
@@ -18,10 +18,8 @@ export default function RecentReviews({ recentPlayers }) {
       </Typography>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          flexWrap: "wrap",
-          width: "600px",
+          width: { xs: "100%", sm: "600px" },
+          textAlign: { xs: "center", sm: "start" },
         }}
       >
         {recentPlayers.map((player, index) => {
