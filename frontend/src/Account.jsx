@@ -23,9 +23,11 @@ export default function Account({ user }) {
 
   if (!user) {
     return (
-      <Typography variant="h6" sx={{ color: "white" }}>
-        You are not logged in
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: "10px" }}>
+        <Typography sx={{ color: "red" }}>
+          Must be logged in to view Account.
+        </Typography>
+      </Box>
     );
   }
 
