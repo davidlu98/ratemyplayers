@@ -37,8 +37,7 @@ export default function RatingDisplay({ playerId }) {
         backgroundColor: "#1a1a1a",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
         padding: "10px",
-        maxWidth: "660px",
-        width: "660px",
+        width: { xs: "100%", sm: "660px" },
       }}
     >
       <Typography

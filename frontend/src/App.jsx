@@ -43,7 +43,7 @@ function App() {
   };
 
   return (
-    <div style={{}}>
+    <div>
       <Navbar user={user} logout={logout} />
       <Routes>
         <Route path="/login" element={<Login setUser={setUser} />} />

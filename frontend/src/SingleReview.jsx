@@ -16,12 +16,10 @@ export default function SingleReview({ review }) {
   return (
     <Card
       sx={{
-        backgroundColor: "#1a1a1a", // Dark background for contrast
-        color: "white", // Text color
+        backgroundColor: "#1a1a1a",
+        color: "white",
         boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
-        // padding: "16px",
-        maxWidth: "680px",
-        width: "680px",
+        width: { xs: "370px", sm: "680px" },
       }}
     >
       <CardContent>

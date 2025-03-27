@@ -1,7 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import axios from "axios";
 
 import PlayerReviews from "./PlayerReviews";
@@ -12,6 +18,9 @@ import OverallRating from "./OverallRating";
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function PlayerPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const { region, name } = useParams(); // Get player name and region from URL
   const [playerData, setPlayerData] = useState(null);
   const [error, setError] = useState(null);
@@ -48,13 +57,47 @@ export default function PlayerPage() {
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
-        <div>
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "white" }}>
+        <Box sx={{ mt: "10px" }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}
+          >
             Player Not Found
           </Typography>
-          <Typography sx={{ color: "white", opacity: "0.8" }}>
+          <Typography
+            sx={{ color: "white", opacity: "0.8", textAlign: "center" }}
+          >
             The player <strong>{name}</strong> was not found on {region}.
           </Typography>
+        </Box>
+      ) : isMobile ? (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "10px",
+            }}
+          >
+            <PlayerInformation playerData={playerData} />
+            <OverallRating playerId={playerData.id} />
+            <RatingDistribution playerId={playerData.id} />
+          </div>
+          <Button
+            component={Link}
+            to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
+            variant="contained"
+            sx={{
+              backgroundColor: "#ff1744",
+              textTransform: "none",
+              mt: "12px",
+              ml: "12px",
+            }}
+          >
+            Write a review
+          </Button>
+          <PlayerReviews playerId={playerData.id} />
         </div>
       ) : (
         <div

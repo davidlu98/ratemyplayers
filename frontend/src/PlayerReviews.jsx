@@ -55,6 +55,7 @@ export default function PlayerReviews({ playerId }) {
         width: "700px",
         display: "flex",
         flexDirection: "column",
+        mb: "10px",
       }}
     >
       <Box
@@ -71,10 +72,9 @@ export default function PlayerReviews({ playerId }) {
       </Typography>
       <Box
         sx={{
-          mb: "10px",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          alignItems: { xs: "left", sm: "center" },
         }}
       >
         {reviews.map((review, index) => (
