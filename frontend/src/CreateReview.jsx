@@ -69,6 +69,7 @@ export default function CreateReview() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
         mt: "16px",
       }}
     >
@@ -76,7 +77,7 @@ export default function CreateReview() {
         component="form"
         onSubmit={submitReview}
         sx={{
-          maxWidth: 600,
+          maxWidth: { xs: "360px", sm: "600px" },
           width: "100%",
           p: 3,
           boxShadow: 3,

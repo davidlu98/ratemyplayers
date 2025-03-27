@@ -76,7 +76,7 @@ export default function PlayerPage() {
             style={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
+              alignItems: "space",
               marginTop: "10px",
             }}
           >
@@ -128,9 +128,7 @@ export default function PlayerPage() {
               Write a review
             </Button>
           </div>
-          <div>
-            <PlayerReviews playerId={playerData.id} />
-          </div>
+          <PlayerReviews playerId={playerData.id} />
         </div>
       )}
     </>

@@ -52,9 +52,10 @@ export default function PlayerReviews({ playerId }) {
   return (
     <Box
       sx={{
-        width: "700px",
         display: "flex",
         flexDirection: "column",
+        width: { xs: "100%", sm: "700px" },
+        maxWidth: { xs: "390px", sm: "700px" },
         mb: "10px",
       }}
     >
@@ -83,10 +84,9 @@ export default function PlayerReviews({ playerId }) {
             variant="outlined"
             sx={{
               marginTop: "10px",
-              display: "flex",
-              flexDirection: "column",
               backgroundColor: "#1a1a1a",
               padding: "2px",
+              // bgcolor: "red",
             }}
           >
             {/* Review Content on the Left */}

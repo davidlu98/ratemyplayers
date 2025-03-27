@@ -67,11 +67,11 @@ const RatingDistribution = ({ playerId }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: { xs: "100%", sm: "325px" },
         bgcolor: "#1a1a1a",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
         padding: "16px",
-        // maxWidth: "325px",
+        width: { xs: "100%", sm: "325px" },
+        maxWidth: { xs: "375px" },
       }}
     >
       <Typography

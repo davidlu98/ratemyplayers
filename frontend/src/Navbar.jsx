@@ -40,39 +40,31 @@ export default function ButtonAppBar({ user, logout }) {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
           }}
         >
           {/* Logo */}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-            }}
-          >
-            <Box sx={{ display: "flex" }}>
-              <img
-                src={filledStar}
-                alt="star"
+          <Box sx={{ display: "flex" }}>
+            <img
+              src={filledStar}
+              alt="star"
+              style={{
+                width: "25px",
+                height: "25px",
+                padding: "2px",
+                pointerEvents: "none",
+              }}
+            />
+            <Typography variant="h6">
+              <Link
+                to="/"
                 style={{
-                  width: "25px",
-                  height: "25px",
-                  padding: "2px",
-                  pointerEvents: "none",
+                  color: "white",
+                  textDecoration: "none",
                 }}
-              />
-              <Typography variant="h6">
-                <Link
-                  to="/"
-                  style={{
-                    color: "white",
-                    textDecoration: "none",
-                  }}
-                >
-                  RateMyPlayers
-                </Link>
-              </Typography>
-            </Box>
+              >
+                RateMyPlayers
+              </Link>
+            </Typography>
           </Box>
 
           {isMobile ? (
@@ -103,9 +95,6 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/account"
                       onClick={handleMenuClose}
-                      // sx={{
-                      //   justifyContent: "flex-end",
-                      // }}
                     >
                       Account
                     </MenuItem>

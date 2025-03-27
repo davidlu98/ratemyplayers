@@ -16,15 +16,17 @@ export default function SingleReview({ review }) {
   return (
     <Card
       sx={{
-        backgroundColor: "#1a1a1a",
+        bgcolor: "#1a1a1a",
+        // bgcolor: "red",
         color: "white",
         boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
-        width: { xs: "370px", sm: "680px" },
+        width: { xs: "100%", sm: "680px" },
+        maxWidth: { xs: "390px", sm: "680px" },
       }}
     >
       <CardContent>
-        {/* Star Rating & Date */}
         {/* <Box display="flex" alignItems="center" justifyContent="space-between"> */}
+        {/* Star Rating & Date */}
         <Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             {/* Star Rating */}
@@ -51,11 +53,9 @@ export default function SingleReview({ review }) {
             </Typography>
           </Box>
           {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}> */}
-          <Box sx={{ display: "flex", mt: "4px" }}>
-            <Typography variant="body2" sx={{ opacity: 0.8 }}>
-              by {review.anonymous ? "anonymous" : review.user.username}
-            </Typography>
-          </Box>
+          <Typography variant="body2" sx={{ opacity: 0.8 }}>
+            by {review.anonymous ? "anonymous" : review.user.username}
+          </Typography>
         </Box>
 
         {/* Review Comment */}
