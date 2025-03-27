@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, Box, Button, Typography, Modal } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Card,
+  Box,
+  Button,
+  Typography,
+  Modal,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import SingleReview from "./SingleReview";
 import PlayerInformation from "./PlayerInformation";
 
 export default function Account({ user }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [reviews, setReviews] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
@@ -55,47 +65,31 @@ export default function Account({ user }) {
   }, []);
 
   return (
-    // Main container (green)
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
-        // bgcolor: "green",
       }}
     >
-      {/* First nested container (blue) */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // bgcolor: "blue",
           width: { xs: "100%", sm: "964px" },
         }}
       >
-        <Typography sx={{ color: "white" }}>
+        <Typography sx={{ color: "white", opacity: 0.8 }}>
           You are logged in as {user.username}
         </Typography>
         <Typography sx={{ color: "white" }}>My Reviews</Typography>
-        {/* <Box
-          sx={{
-            textAlign: "center",
-            bgcolor: "#1a1a1a",
-            boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
-            padding: "10px",
-          }}
-        >
-          <Typography sx={{ color: "white" }}>My Reviews</Typography>
-        </Box> */}
         {/* Player container */}
         <Box
-          // sm:990
           sx={{
             display: "flex",
             flexWrap: "wrap",
             width: { xs: "100%", sm: "990px" },
             maxWidth: { xs: "390px", sm: "990px" },
-            // bgcolor: "red",
           }}
         >
           {Object.entries(reviews).map(
@@ -105,12 +99,9 @@ export default function Account({ user }) {
                   variant="outlined"
                   key={playerName}
                   onClick={() => setSelectedPlayer({ playerInfo, reviews })}
-                  // sx={{ margin: "2px" }}
                   sx={{
                     margin: "2px",
-                    // bgcolor: "blue",
                     width: { xs: "100%", sm: "auto" },
-                    // maxWidth: { sm: "100%" },
                   }}
                 >
                   <PlayerInformation playerData={playerInfo} />
@@ -142,16 +133,9 @@ export default function Account({ user }) {
             >
               {selectedPlayer && (
                 <>
-                  <Box
-                    sx={{
-                      margin: "10px",
-                      boxShadow: "0px 4x 10px rgba(0,0,0,0.5)",
-                    }}
-                  >
+                  <Box>
                     <Typography
-                      variant="h4"
                       sx={{
-                        fontWeight: "bold",
                         color: "white",
                         textAlign: "center",
                       }}
@@ -166,22 +150,24 @@ export default function Account({ user }) {
                         style={{
                           backgroundColor: "#1a1a1a", // Dark background for contrast
                           boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
-                          marginTop: "10px",
-                          width: "100%",
-                          display: "flex",
-                          justifyContent: "flex-start",
+                          marginTop: "8px",
+                          width: isMobile ? "360px" : "auto",
                         }}
                       >
                         <SingleReview review={review} />
                         <Button
                           variant="contained"
-                          sx={{ backgroundColor: "#ff1744" }}
+                          sx={{
+                            backgroundColor: "#ff1744",
+                            margin: "4px",
+                            textTransform: "none",
+                          }}
                           onClick={() => {
                             deleteReview(review.id);
                             setSelectedPlayer(null);
                           }}
                         >
-                          <DeleteIcon />
+                          Delete
                         </Button>
                       </Card>
                     );
