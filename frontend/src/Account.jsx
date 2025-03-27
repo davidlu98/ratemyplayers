@@ -55,37 +55,47 @@ export default function Account({ user }) {
   }, []);
 
   return (
-    <>
-      <Typography variant="h6" sx={{ color: "white" }}>
-        You are logged in as {user.username}
-      </Typography>
+    // Main container (green)
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        // bgcolor: "green",
+      }}
+    >
+      {/* First nested container (blue) */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          // bgcolor: "blue",
+          width: { xs: "100%", sm: "964px" },
         }}
       >
-        <Box
+        <Typography sx={{ color: "white" }}>
+          You are logged in as {user.username}
+        </Typography>
+        <Typography sx={{ color: "white" }}>My Reviews</Typography>
+        {/* <Box
           sx={{
             textAlign: "center",
-            marginTop: "16px",
-            marginBottom: "10px",
             bgcolor: "#1a1a1a",
             boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
             padding: "10px",
-            width: "964px",
           }}
         >
-          <Typography variant="h2" sx={{ fontWeight: "bold", color: "white" }}>
-            My Reviews
-          </Typography>
-        </Box>
+          <Typography sx={{ color: "white" }}>My Reviews</Typography>
+        </Box> */}
+        {/* Player container */}
         <Box
+          // sm:990
           sx={{
             display: "flex",
             flexWrap: "wrap",
-            width: "990px",
+            width: { xs: "100%", sm: "990px" },
+            maxWidth: { xs: "390px", sm: "990px" },
+            // bgcolor: "red",
           }}
         >
           {Object.entries(reviews).map(
@@ -95,7 +105,13 @@ export default function Account({ user }) {
                   variant="outlined"
                   key={playerName}
                   onClick={() => setSelectedPlayer({ playerInfo, reviews })}
-                  sx={{ margin: "2px" }}
+                  // sx={{ margin: "2px" }}
+                  sx={{
+                    margin: "2px",
+                    // bgcolor: "blue",
+                    width: { xs: "100%", sm: "auto" },
+                    // maxWidth: { sm: "100%" },
+                  }}
                 >
                   <PlayerInformation playerData={playerInfo} />
                 </Card>
@@ -177,6 +193,6 @@ export default function Account({ user }) {
         </Box>
         ;
       </Box>
-    </>
+    </Box>
   );
 }
