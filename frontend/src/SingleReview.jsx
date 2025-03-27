@@ -17,7 +17,6 @@ export default function SingleReview({ review }) {
     <Card
       sx={{
         bgcolor: "#1a1a1a",
-        // bgcolor: "red",
         color: "white",
         boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
         width: { xs: "100%", sm: "680px" },
@@ -25,7 +24,6 @@ export default function SingleReview({ review }) {
       }}
     >
       <CardContent>
-        {/* <Box display="flex" alignItems="center" justifyContent="space-between"> */}
         {/* Star Rating & Date */}
         <Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>

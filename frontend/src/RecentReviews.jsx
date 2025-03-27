@@ -11,6 +11,7 @@ export default function RecentReviews({ recentPlayers }) {
         alignItems: "center",
         bgcolor: "#1F1F1F",
         mb: 2,
+        border: "1px solid #a0aec0",
       }}
     >
       <Typography sx={{ color: "white", margin: "10px" }}>

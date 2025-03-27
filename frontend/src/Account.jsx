@@ -124,8 +124,8 @@ export default function Account({ user }) {
           >
             <Box
               sx={{
-                marginTop: "16px",
-                backgroundColor: "#1e1e1e",
+                mt: "16px",
+                bgcolor: "#1e1e1e",
                 boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
                 padding: "10px",
                 maxWidth: "750px",
@@ -145,35 +145,39 @@ export default function Account({ user }) {
                       Reviews for {selectedPlayer.playerInfo.current_name}
                     </Typography>
                   </Box>
-                  {selectedPlayer.reviews.map((review, index) => {
-                    return (
-                      <Card
-                        key={index}
-                        style={{
-                          backgroundColor: "#1a1a1a", // Dark background for contrast
-                          boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
-                          marginTop: "8px",
-                          width: isMobile ? "360px" : "auto",
-                        }}
-                      >
-                        <SingleReview review={review} />
-                        <Button
-                          variant="contained"
+                  <Box>
+                    {selectedPlayer.reviews.map((review, index) => {
+                      return (
+                        <Card
+                          key={index}
                           sx={{
-                            backgroundColor: "#ff1744",
-                            margin: "4px",
-                            textTransform: "none",
-                          }}
-                          onClick={() => {
-                            deleteReview(review.id);
-                            setSelectedPlayer(null);
+                            bgcolor: "#1a1a1a", // Dark background for contrast
+                            boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
+                            mt: "8px",
+                            borderColor: "gray.500",
+                            width: isMobile ? "360px" : "auto",
+                            border: "1px solid #a0aec0",
                           }}
                         >
-                          Delete
-                        </Button>
-                      </Card>
-                    );
-                  })}
+                          <SingleReview review={review} />
+                          <Button
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "#ff1744",
+                              margin: "4px",
+                              textTransform: "none",
+                            }}
+                            onClick={() => {
+                              deleteReview(review.id);
+                              setSelectedPlayer(null);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </Card>
+                      );
+                    })}
+                  </Box>
                 </>
               )}
             </Box>

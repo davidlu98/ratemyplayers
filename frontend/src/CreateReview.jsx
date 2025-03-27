@@ -82,6 +82,7 @@ export default function CreateReview() {
           p: 3,
           boxShadow: 3,
           bgcolor: "#1a1a1a",
+          border: "1px solid #a0aec0",
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "center" }}>

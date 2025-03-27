@@ -78,6 +78,7 @@ export default function PlayerPage() {
               flexDirection: "column",
               alignItems: "space",
               marginTop: "10px",
+              border: "1px solid #a0aec0",
             }}
           >
             <PlayerInformation playerData={playerData} />
@@ -108,7 +109,7 @@ export default function PlayerPage() {
           }}
         >
           <div>
-            <div style={{ marginTop: "10px" }}>
+            <div style={{ marginTop: "10px", border: "1px solid #a0aec0" }}>
               <OverallRating playerId={playerData.id} />
               <div style={{ display: "flex" }}>
                 <PlayerInformation playerData={playerData} />

@@ -35,7 +35,10 @@ export default function ButtonAppBar({ user, logout }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: "#1e1e1e" }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: "#1e1e1e", borderBottom: "1px solid #a0aec0" }}
+      >
         <Toolbar
           sx={{
             display: "flex",
@@ -83,7 +86,7 @@ export default function ButtonAppBar({ user, logout }) {
                   },
                 }}
               >
-                <MenuItem>
+                <MenuItem sx={{ border: "1px solid #a0aec0", mb: "8px" }}>
                   <SearchBar
                     isMobile={isMobile}
                     handleMenuClose={handleMenuClose}
@@ -95,6 +98,7 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/account"
                       onClick={handleMenuClose}
+                      sx={{ border: "1px solid #a0aec0", mb: "8px" }}
                     >
                       Account
                     </MenuItem>
@@ -103,6 +107,7 @@ export default function ButtonAppBar({ user, logout }) {
                         handleMenuClose();
                         logout();
                       }}
+                      sx={{ border: "1px solid #a0aec0" }}
                     >
                       Sign Out
                     </MenuItem>
@@ -113,6 +118,7 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/login"
                       onClick={handleMenuClose}
+                      sx={{ border: "1px solid #a0aec0", mb: "8px" }}
                     >
                       Log In
                     </MenuItem>
@@ -120,6 +126,7 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/register"
                       onClick={handleMenuClose}
+                      sx={{ border: "1px solid #a0aec0" }}
                     >
                       Sign Up
                     </MenuItem>

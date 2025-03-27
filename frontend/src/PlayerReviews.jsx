@@ -83,10 +83,10 @@ export default function PlayerReviews({ playerId }) {
             key={index}
             variant="outlined"
             sx={{
-              marginTop: "10px",
-              backgroundColor: "#1a1a1a",
+              mt: "10px",
+              bgcolor: "#1a1a1a",
               padding: "2px",
-              // bgcolor: "red",
+              borderColor: "grey.500",
             }}
           >
             {/* Review Content on the Left */}
