@@ -34,7 +34,7 @@ export default function RatingDisplay({ playerId }) {
     <Box
       sx={{
         textAlign: "center",
-        backgroundColor: "#1a1a1a",
+        bgcolor: "#222222",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
         padding: { xs: "15px", sm: "10px" },
         width: { xs: "100%", sm: "660px" },

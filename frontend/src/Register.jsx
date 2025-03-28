@@ -59,23 +59,20 @@ export default function Register({ setUser }) {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "200px",
+        mt: 2,
       }}
     >
       <Paper
         sx={{
-          padding: "32px",
-          width: "100%",
-          maxWidth: "400px",
+          bgcolor: "#171717",
+          padding: "20px",
+          width: { xs: "100%", sm: "400px" },
+          maxWidth: { xs: "350px", sm: "400px" },
           textAlign: "center",
-          background: "white",
-          borderRadius: "8px",
+          borderRadius: "12px",
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ marginBottom: "16px", fontWeight: "bold" }}
-        >
+        <Typography variant="h6" sx={{ marginBottom: "12px", color: "white" }}>
           Register
         </Typography>
         <form
@@ -83,6 +80,16 @@ export default function Register({ setUser }) {
           style={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
           <TextField
+            sx={{
+              bgcolor: "#1f1f1f",
+              "& .MuiInputLabel-root": { color: "white", opacity: 0.6 },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#ff1744" },
+                "&:hover fieldset": { borderColor: "#ff8a80" },
+                "&.Mui-focused fieldset": { borderColor: "#ff1744" },
+              },
+              "& input": { color: "white" },
+            }}
             label="Username"
             variant="outlined"
             fullWidth
@@ -90,6 +97,16 @@ export default function Register({ setUser }) {
             onChange={(event) => setUsername(event.target.value)}
           />
           <TextField
+            sx={{
+              bgcolor: "#1f1f1f",
+              "& .MuiInputLabel-root": { color: "white", opacity: 0.6 },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#ff1744" },
+                "&:hover fieldset": { borderColor: "#ff8a80" },
+                "&.Mui-focused fieldset": { borderColor: "#ff1744" },
+              },
+              "& input": { color: "white" },
+            }}
             label="Password"
             variant="outlined"
             fullWidth
@@ -98,6 +115,16 @@ export default function Register({ setUser }) {
             onChange={(event) => setPassword(event.target.value)}
           />
           <TextField
+            sx={{
+              bgcolor: "#1f1f1f",
+              "& .MuiInputLabel-root": { color: "white", opacity: 0.6 },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#ff1744" },
+                "&:hover fieldset": { borderColor: "#ff8a80" },
+                "&.Mui-focused fieldset": { borderColor: "#ff1744" },
+              },
+              "& input": { color: "white" },
+            }}
             label="Confirm"
             variant="outlined"
             fullWidth
@@ -117,7 +144,7 @@ export default function Register({ setUser }) {
               />
             }
             label={
-              <Typography variant="body1" sx={{ color: "black" }}>
+              <Typography variant="body1" sx={{ color: "white" }}>
                 Show password
               </Typography>
             }
@@ -131,7 +158,10 @@ export default function Register({ setUser }) {
             Register
           </Button>
         </form>
-        <Typography variant="body2" style={{ marginTop: "16px" }}>
+        <Typography
+          variant="body2"
+          style={{ marginTop: "16px", color: "white" }}
+        >
           Already have an account?{" "}
           <Link to="/login" style={{ color: "#1976d2" }}>
             Sign in here!

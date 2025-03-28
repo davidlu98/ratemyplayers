@@ -81,7 +81,7 @@ export default function CreateReview() {
           width: "100%",
           p: 3,
           boxShadow: 3,
-          bgcolor: "#1a1a1a",
+          bgcolor: "#222222",
           border: "1px solid #a0aec0",
         }}
       >
@@ -128,7 +128,7 @@ export default function CreateReview() {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           sx={{
-            "& .MuiInputLabel-root": { color: "white" }, // Label color
+            "& .MuiInputLabel-root": { color: "white", opacity: 0.6 },
             "& .MuiOutlinedInput-root": {
               "& fieldset": { borderColor: "#ff1744" }, // Default border color
               "&:hover fieldset": { borderColor: "#ff8a80" }, // Hover border color
@@ -145,7 +145,7 @@ export default function CreateReview() {
           <Button
             type="submit"
             sx={{
-              backgroundColor: "#ff1744",
+              bgcolor: "#ff1744",
               textTransform: "none",
               color: "white",
             }}

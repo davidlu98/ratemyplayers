@@ -9,7 +9,7 @@ export default function MostReviewedPlayers({ mostReviewedPlayers }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        bgcolor: "#1F1F1F",
+        bgcolor: "#1a1a1a",
         mb: 2,
         border: "1px solid #a0aec0",
       }}

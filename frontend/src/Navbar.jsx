@@ -37,7 +37,7 @@ export default function ButtonAppBar({ user, logout }) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="static"
-        sx={{ backgroundColor: "#1e1e1e", borderBottom: "1px solid #a0aec0" }}
+        sx={{ backgroundColor: "#171717", borderBottom: "1px solid #a0aec0" }}
       >
         <Toolbar
           sx={{

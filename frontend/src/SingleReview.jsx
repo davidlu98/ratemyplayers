@@ -16,7 +16,7 @@ export default function SingleReview({ review }) {
   return (
     <Card
       sx={{
-        bgcolor: "#1a1a1a",
+        bgcolor: "#222222",
         color: "white",
         boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
         width: { xs: "100%", sm: "680px" },

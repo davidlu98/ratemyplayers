@@ -75,14 +75,14 @@ const SearchBar = ({ isMobile, handleMenuClose }) => {
           </FormControl>
 
           <TextField
-            label="Character Name"
+            label="Character name"
             value={playerName}
             onChange={(event) => setPlayerName(event.target.value)}
             variant="outlined"
             size="small"
             sx={{
               width: { xs: "50%", xm: "200px" },
-              "& .MuiInputLabel-root": { color: "white" }, // Label color
+              "& .MuiInputLabel-root": { color: "white", opacity: 0.6 }, // Label color
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#ff1744" }, // Default border color
                 "&:hover fieldset": { borderColor: "#ff8a80" }, // Hover border color

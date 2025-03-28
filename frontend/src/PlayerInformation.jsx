@@ -6,7 +6,7 @@ export default function PlayerInformation({ playerData }) {
   return (
     <Box
       sx={{
-        backgroundColor: "#1a1a1a",
+        bgcolor: "#222222",
         color: "white",
         textAlign: "center",
         padding: { xs: "15px", sm: "20px" },

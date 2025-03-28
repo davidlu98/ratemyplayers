@@ -84,7 +84,8 @@ export default function PlayerReviews({ playerId }) {
             variant="outlined"
             sx={{
               mt: "10px",
-              bgcolor: "#1a1a1a",
+              // bgcolor: "#1a1a1a",
+              bgcolor: "#1f1f1f",
               padding: "2px",
               borderColor: "grey.500",
             }}

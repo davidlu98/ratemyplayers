@@ -125,7 +125,7 @@ export default function Account({ user }) {
             <Box
               sx={{
                 mt: "16px",
-                bgcolor: "#1e1e1e",
+                bgcolor: "#0a0a0a",
                 boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
                 padding: "10px",
                 maxWidth: "750px",
