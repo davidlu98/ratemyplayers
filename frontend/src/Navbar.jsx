@@ -35,11 +35,7 @@ export default function ButtonAppBar({ user, logout }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="static"
-        // sx={{ backgroundColor: "#171717", borderBottom: "1px solid #a0aec0" }}
-        sx={{ backgroundColor: "#171717" }}
-      >
+      <AppBar position="static" sx={{ backgroundColor: "#171717" }}>
         <Toolbar
           sx={{
             display: "flex",
@@ -84,10 +80,11 @@ export default function ButtonAppBar({ user, logout }) {
                   "& .MuiMenu-paper": {
                     backgroundColor: "#1e1e1e",
                     color: "white",
+                    border: "1px solid #a0aec0",
                   },
                 }}
               >
-                <MenuItem sx={{ border: "1px solid #a0aec0", mb: "8px" }}>
+                <MenuItem sx={{}}>
                   <SearchBar
                     isMobile={isMobile}
                     handleMenuClose={handleMenuClose}
@@ -99,7 +96,7 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/account"
                       onClick={handleMenuClose}
-                      sx={{ border: "1px solid #a0aec0", mb: "8px" }}
+                      sx={{ bgcolor: "#222222" }}
                     >
                       Account
                     </MenuItem>
@@ -108,7 +105,7 @@ export default function ButtonAppBar({ user, logout }) {
                         handleMenuClose();
                         logout();
                       }}
-                      sx={{ border: "1px solid #a0aec0" }}
+                      sx={{ bgcolor: "#222222" }}
                     >
                       Sign Out
                     </MenuItem>
@@ -119,7 +116,7 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/login"
                       onClick={handleMenuClose}
-                      sx={{ border: "1px solid #a0aec0", mb: "8px" }}
+                      sx={{ bgcolor: "#222222" }}
                     >
                       Log In
                     </MenuItem>
@@ -127,7 +124,7 @@ export default function ButtonAppBar({ user, logout }) {
                       component={Link}
                       to="/register"
                       onClick={handleMenuClose}
-                      sx={{ border: "1px solid #a0aec0" }}
+                      sx={{ bgcolor: "#222222" }}
                     >
                       Sign Up
                     </MenuItem>
