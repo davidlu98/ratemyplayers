@@ -75,7 +75,7 @@ export default function PlayerReviews({ playerId }) {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: { xs: "left", sm: "center" },
+          alignItems: "center",
         }}
       >
         {reviews.map((review, index) => (
@@ -84,15 +84,13 @@ export default function PlayerReviews({ playerId }) {
             variant="outlined"
             sx={{
               mt: "10px",
-              // bgcolor: "#1a1a1a",
               bgcolor: "#1f1f1f",
               padding: "2px",
               borderColor: "grey.500",
+              width: { xs: "360px", sm: "auto" },
             }}
           >
-            {/* Review Content on the Left */}
             <SingleReview review={review} />
-            {/* Vote Component on the Right */}
             <ReviewVote reviewId={review.id} />
           </Card>
         ))}
