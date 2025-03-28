@@ -68,6 +68,7 @@ export default function Login({ setUser }) {
           maxWidth: { xs: "350px", sm: "400px" },
           textAlign: "center",
           borderRadius: "12px",
+          border: "1px solid #a0aec0",
         }}
       >
         <Typography variant="h6" sx={{ marginBottom: "12px", color: "white" }}>
