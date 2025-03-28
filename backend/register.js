@@ -9,12 +9,34 @@ const prisma = new PrismaClient();
 
 router.post("/", async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, confirmedPassword } = req.body;
+
+    if (username !== username.trim()) {
+      return res
+        .status(400)
+        .json("Username cannot have leading or trailing spaces.");
+    }
 
     if (username.length < 4 || username.length > 12) {
       return res
         .status(400)
         .json("Username must be between 4 and 12 characters.");
+    }
+
+    if (!/^[a-zA-Z0-9]+$/.test(username)) {
+      return res
+        .status(400)
+        .json("Username can only contain letters and numbers.");
+    }
+
+    if (password !== confirmedPassword) {
+      return res.status(400).json("Passwords are not the same.");
+    }
+
+    if (password !== password.trim()) {
+      return res
+        .status(400)
+        .json("Password cannot have leading or trailing spaces.");
     }
 
     if (password.length < 6 || username.length > 255) {

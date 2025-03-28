@@ -2,11 +2,21 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { TextField, Button, Box, Typography, Paper } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Paper,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 export default function Register({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmedPassword, setConfirmedPassword] = useState("");
+  const [togglePassword, setTogglePassword] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -22,6 +32,7 @@ export default function Register({ setUser }) {
       const { data } = await axios.post(`${API_URL}/register`, {
         username,
         password,
+        confirmedPassword,
       });
 
       window.localStorage.setItem("token", data);
@@ -83,8 +94,33 @@ export default function Register({ setUser }) {
             variant="outlined"
             fullWidth
             value={password}
-            type="password"
+            type={togglePassword ? "text" : "password"}
             onChange={(event) => setPassword(event.target.value)}
+          />
+          <TextField
+            label="Confirm"
+            variant="outlined"
+            fullWidth
+            value={confirmedPassword}
+            type={togglePassword ? "text" : "password"}
+            onChange={(event) => setConfirmedPassword(event.target.value)}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={togglePassword}
+                onChange={(e) => setTogglePassword(e.target.checked)}
+                sx={{
+                  color: "#ff1744",
+                  "&.Mui-checked": { color: "#ff1744" },
+                }}
+              />
+            }
+            label={
+              <Typography variant="body1" sx={{ color: "black" }}>
+                Show password
+              </Typography>
+            }
           />
           <Button
             type="submit"

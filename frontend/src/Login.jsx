@@ -2,11 +2,20 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { TextField, Button, Box, Typography, Paper } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Paper,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 export default function Login({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [togglePassword, setTogglePassword] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -83,8 +92,25 @@ export default function Login({ setUser }) {
             variant="outlined"
             fullWidth
             value={password}
-            type="password"
+            type={togglePassword ? "text" : "password"}
             onChange={(event) => setPassword(event.target.value)}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={togglePassword}
+                onChange={(e) => setTogglePassword(e.target.checked)}
+                sx={{
+                  color: "#ff1744",
+                  "&.Mui-checked": { color: "#ff1744" },
+                }}
+              />
+            }
+            label={
+              <Typography variant="body1" sx={{ color: "black" }}>
+                Show password
+              </Typography>
+            }
           />
           <Button
             type="submit"
