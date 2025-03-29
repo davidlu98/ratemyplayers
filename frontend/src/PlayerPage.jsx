@@ -71,35 +71,50 @@ export default function PlayerPage() {
           </Typography>
         </Box>
       ) : isMobile ? (
-        <div>
-          <div
-            style={{
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "space",
               marginTop: "10px",
-              border: "1px solid #a0aec0",
+              width: { xs: "100%", sm: "283px" },
+              maxWidth: "374px",
             }}
           >
-            <PlayerInformation playerData={playerData} />
-            <OverallRating playerId={playerData.id} />
-            <RatingDistribution playerId={playerData.id} />
-          </div>
-          <Button
-            component={Link}
-            to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
-            variant="contained"
-            sx={{
-              backgroundColor: "#ff1744",
-              textTransform: "none",
-              mt: "12px",
-              ml: "12px",
-            }}
-          >
-            Write a review
-          </Button>
-          <PlayerReviews playerId={playerData.id} />
-        </div>
+            <Box sx={{ border: "1px solid #a0aec0" }}>
+              <PlayerInformation playerData={playerData} />
+              <OverallRating playerId={playerData.id} />
+              <RatingDistribution playerId={playerData.id} />
+            </Box>
+            <Box>
+              <Button
+                component={Link}
+                to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#ff1744",
+                  textTransform: "none",
+                  // margin: "8px 0px 0px 0px",
+                  mt: "8px",
+                }}
+              >
+                Write a Review
+              </Button>
+            </Box>
+          </Box>
+
+          <PlayerReviews
+            region={playerData.region}
+            playerName={playerData.current_name}
+            playerId={playerData.id}
+          />
+        </Box>
       ) : (
         <div
           style={{
@@ -129,7 +144,11 @@ export default function PlayerPage() {
               Write a review
             </Button>
           </div>
-          <PlayerReviews playerId={playerData.id} />
+          <PlayerReviews
+            region={playerData.region}
+            playerName={playerData.current_name}
+            playerId={playerData.id}
+          />
         </div>
       )}
     </>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FormControl, Select, MenuItem, Box } from "@mui/material";
+import { FormControl, Select, MenuItem, Box, InputLabel } from "@mui/material";
 
 const SortMenu = ({ onSortChange }) => {
   const [sortBy, setSortBy] = useState("newest");
@@ -20,7 +20,7 @@ const SortMenu = ({ onSortChange }) => {
       sx={{
         display: "flex",
         gap: 1,
-        mt: "6px",
+        mt: "2px",
         width: "300px",
       }}
     >

@@ -12,6 +12,7 @@ import Login from "./Login";
 import Register from "./Register";
 import PlayerPage from "./PlayerPage";
 import CreateReview from "./CreateReview";
+import ReportReview from "./ReportReview";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,6 +55,10 @@ function App() {
         <Route
           path="/write-review/:region/:playerName/:playerId"
           element={<CreateReview />}
+        />
+        <Route
+          path="/report-review/:region/:playerName/:reviewId"
+          element={<ReportReview />}
         />
       </Routes>
     </div>

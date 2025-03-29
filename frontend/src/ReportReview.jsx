@@ -2,39 +2,27 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import {
-  Checkbox,
-  FormControlLabel,
+  FormControl,
+  Select,
+  MenuItem,
   Typography,
   Box,
-  Rating,
   TextField,
   Button,
 } from "@mui/material";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-const filledStar = "/filled-star2.png";
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-export default function CreateReview() {
+export default function ReportReview() {
   const navigate = useNavigate();
 
-  const { region, playerName, playerId } = useParams();
+  const { region, playerName, reviewId } = useParams();
+  const [reportType, setReportType] = useState("Hate Speech");
+  const [reason, setReason] = useState("");
 
-  const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(3);
-
-  const [anonymous, setAnonymous] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
-
-  const ratingLabels = {
-    5: "Awesome",
-    4: "Great",
-    3: "Good",
-    2: "OK",
-    1: "Awful",
-  };
 
   const submitReview = async (event) => {
     event.preventDefault();
@@ -44,12 +32,11 @@ export default function CreateReview() {
 
     try {
       await axios.post(
-        `${API_URL}/reviews/`,
+        `${API_URL}/reports/`,
         {
-          player_id: playerId,
-          rating,
-          comment,
-          anonymous,
+          review_id: reviewId,
+          type: reportType,
+          reason,
         },
         { headers: { authorization: token } }
       );
@@ -77,7 +64,7 @@ export default function CreateReview() {
         component="form"
         onSubmit={submitReview}
         sx={{
-          maxWidth: { xs: "360px", sm: "600px" },
+          maxWidth: { xs: "340px", sm: "600px" },
           width: "100%",
           p: 2,
           boxShadow: 3,
@@ -85,48 +72,50 @@ export default function CreateReview() {
           border: "1px solid #a0aec0",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: "10px" }}>
           <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
-            Rate Your Experience
+            Report a Review
           </Typography>
         </Box>
 
-        {/* Select Rating */}
-        <Box sx={{ display: "flex", mb: "10px" }}>
-          <Rating
-            name="custom-images"
-            value={rating}
-            onChange={(_, newValue) => setRating(newValue >= 1 ? newValue : 1)}
-            size="large"
-            icon={
-              <img
-                src={filledStar}
-                alt="filled-star"
-                style={{ width: 24, height: 24 }}
-              />
-            }
-            emptyIcon={
-              <img
-                src={filledStar}
-                alt="empty-star"
-                style={{ width: 24, height: 24, opacity: 0.4 }}
-              />
-            }
-          />
-          <Typography sx={{ ml: "8px", opacity: 0.8, color: "white" }}>
-            {ratingLabels[rating]}
-          </Typography>
-        </Box>
+        {/* Report Type Dropdown */}
+        <FormControl size="small" sx={{ mb: "10px" }}>
+          <Select
+            value={reportType}
+            onChange={(event) => setReportType(event.target.value)}
+            sx={{
+              color: "white", // Selected text color
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ff1744",
+              }, // Default border
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ff8a80",
+              }, // Hover border
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ff1744",
+              }, // Focus border
+              "& .MuiSvgIcon-root": { color: "#ff1744" }, // Arrow icon color
+            }}
+          >
+            <MenuItem value="Hate Speech">Hate Speech</MenuItem>
+            <MenuItem value="Harassment/Bullying">Harassment/Bullying</MenuItem>
+            <MenuItem value="Spam/Advertisement">Spam/Advertisement</MenuItem>
+            <MenuItem value="Inappropriate Content">
+              Inappropriate Content
+            </MenuItem>
+            <MenuItem value="Other">Other (Please Specify)</MenuItem>
+          </Select>
+        </FormControl>
 
-        {/* TextField for Review */}
+        {/* TextField for Report */}
         <TextField
-          label="Write a review"
+          label="Reason for reporting"
           variant="outlined"
           multiline
           rows={4}
           fullWidth
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
           sx={{
             bgcolor: "#1f1f1f",
             "& .MuiInputLabel-root": { color: "white", opacity: 0.6 },
@@ -141,7 +130,7 @@ export default function CreateReview() {
           }}
         />
 
-        {/* Submit Button and Anonymous Checkbox */}
+        {/* Submit Button */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Button
             type="submit"
@@ -151,25 +140,8 @@ export default function CreateReview() {
               color: "white",
             }}
           >
-            Submit Review
+            Submit Report
           </Button>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={anonymous}
-                onChange={(e) => setAnonymous(e.target.checked)}
-                sx={{
-                  color: "#ff1744",
-                  "&.Mui-checked": { color: "#ff1744" },
-                }}
-              />
-            }
-            label={
-              <Typography variant="body1" sx={{ color: "white" }}>
-                Post Anonymously
-              </Typography>
-            }
-          />
         </Box>
       </Box>
       <Box sx={{ mt: "10px" }}>

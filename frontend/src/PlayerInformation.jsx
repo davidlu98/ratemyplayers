@@ -9,9 +9,9 @@ export default function PlayerInformation({ playerData }) {
         bgcolor: "#222222",
         color: "white",
         textAlign: "center",
-        padding: { xs: "15px", sm: "20px" },
+        padding: { xs: "8px", sm: "20px" },
         width: { xs: "100%", sm: "283px" },
-        maxWidth: { xs: "375px", sm: "283px" },
+        maxWidth: { xs: "355px", sm: "283px" },
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
       }}
     >

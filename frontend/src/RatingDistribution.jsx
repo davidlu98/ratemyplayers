@@ -69,9 +69,9 @@ const RatingDistribution = ({ playerId }) => {
         alignItems: "center",
         bgcolor: "#222222",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
-        padding: "16px",
+        padding: { xs: "8px", sm: "16px" },
         width: { xs: "100%", sm: "325px" },
-        maxWidth: { xs: "375px" },
+        maxWidth: { xs: "355px" },
       }}
     >
       <Typography

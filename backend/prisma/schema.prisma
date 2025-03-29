@@ -44,6 +44,7 @@ model Review {
   player     Player   @relation(fields: [player_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   votes      Vote[]
+  Report     Report[]
 
   // New fields to track upvotes and downvotes
   upvotes   Int @default(0)
@@ -57,6 +58,7 @@ model User {
   created_at DateTime @default(now())
   reviews    Review[]
   Vote       Vote[]
+  Report     Report[]
 }
 
 model Vote {
@@ -68,6 +70,18 @@ model Vote {
   user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([user_id, review_id])
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  review_id  String
+  user_id    String
+  type       String
+  reason     String
+  status     String   @default("pending")
+  created_at DateTime @default(now())
+  review     Review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 enum Region {

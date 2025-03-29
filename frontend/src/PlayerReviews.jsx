@@ -1,14 +1,17 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Typography, Box, Card, Pagination } from "@mui/material";
+import { Typography, Box, Card, Pagination, Button } from "@mui/material";
+import FlagIcon from "@mui/icons-material/Flag";
 import axios from "axios";
 import SingleReview from "./SingleReview";
 import ReviewVote from "./ReviewVote";
 import SortMenu from "./SortMenu";
 
+import { Link } from "react-router-dom";
+
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-export default function PlayerReviews({ playerId }) {
+export default function PlayerReviews({ region, playerName, playerId }) {
   const [reviews, setReviews] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
@@ -91,7 +94,19 @@ export default function PlayerReviews({ playerId }) {
             }}
           >
             <SingleReview review={review} />
-            <ReviewVote reviewId={review.id} />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <ReviewVote reviewId={review.id} />
+              <Button
+                component={Link}
+                to={`/report-review/${region}/${playerName}/${review.id}`}
+                sx={{
+                  textTransform: "none",
+                  color: "#ff1744",
+                }}
+              >
+                <FlagIcon />
+              </Button>
+            </Box>
           </Card>
         ))}
 
