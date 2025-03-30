@@ -11,6 +11,10 @@ import {
 } from "@mui/material";
 import SingleReview from "./SingleReview";
 import PlayerInformation from "./PlayerInformation";
+import ReviewVote from "./ReviewVote";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function Account({ user }) {
   const theme = useTheme();
@@ -18,8 +22,7 @@ export default function Account({ user }) {
 
   const [reviews, setReviews] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(null);
 
   if (!user) {
     return (
@@ -91,7 +94,7 @@ export default function Account({ user }) {
             display: "flex",
             flexWrap: "wrap",
             width: { xs: "100%", sm: "990px" },
-            maxWidth: { xs: "390px", sm: "990px" },
+            maxWidth: { xs: "375px", sm: "990px" },
           }}
         >
           {Object.entries(reviews).map(
@@ -151,29 +154,38 @@ export default function Account({ user }) {
                         <Card
                           key={index}
                           sx={{
-                            bgcolor: "#1a1a1a", // Dark background for contrast
-                            boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
-                            mt: "8px",
+                            bgcolor: "#1f1f1f",
+                            mt: "10px",
+                            padding: "2px",
                             borderColor: "gray.500",
                             width: isMobile ? "360px" : "auto",
                             border: "1px solid #a0aec0",
                           }}
                         >
                           <SingleReview review={review} />
-                          <Button
-                            variant="contained"
+                          <Box
                             sx={{
-                              backgroundColor: "#ff1744",
-                              margin: "4px",
-                              textTransform: "none",
-                            }}
-                            onClick={() => {
-                              deleteReview(review.id);
-                              setSelectedPlayer(null);
+                              display: "flex",
+                              justifyContent: "space-between",
                             }}
                           >
-                            Delete
-                          </Button>
+                            <ReviewVote reviewId={review.id} />
+                            <Button
+                              variant="contained"
+                              sx={{
+                                backgroundColor: "#ff1744",
+                                margin: "4px",
+                                textTransform: "none",
+                              }}
+                              onClick={() => {
+                                // deleteReview(review.id);
+                                // setSelectedPlayer(null);
+                                setConfirmDeleteModal(review.id);
+                              }}
+                            >
+                              <DeleteIcon />
+                            </Button>
+                          </Box>
                         </Card>
                       );
                     })}
@@ -183,7 +195,58 @@ export default function Account({ user }) {
             </Box>
           </Modal>
         </Box>
-        ;
+
+        <Modal
+          open={!!confirmDeleteModal}
+          onClose={() => setConfirmDeleteModal(null)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(1px)",
+          }}
+        >
+          <Box
+            sx={{
+              bgcolor: "#0a0a0a",
+              padding: "15px",
+              textAlign: "center",
+              boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
+            }}
+          >
+            <Typography sx={{ color: "white", marginBottom: "10px" }}>
+              Are you sure you want to delete this review? This action cannot be
+              undone.
+            </Typography>
+            <Box
+              sx={{ display: "flex", justifyContent: "center", gap: "10px" }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ textTransform: "none" }}
+                onClick={() => {
+                  deleteReview(confirmDeleteModal);
+                  setConfirmDeleteModal(null);
+                  setSelectedPlayer(null);
+                }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "white",
+                  borderColor: "white",
+                  textTransform: "none",
+                }}
+                onClick={() => setConfirmDeleteModal(null)}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
       </Box>
     </Box>
   );
