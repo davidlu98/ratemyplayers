@@ -12,21 +12,20 @@ import {
   Checkbox,
 } from "@mui/material";
 
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
 export default function Register({ setUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [togglePassword, setTogglePassword] = useState(false);
-
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
-
   const register = async (event) => {
     event.preventDefault();
-    setErrorMessage("");
+    setErrorMessage(null);
 
     try {
       const { data } = await axios.post(`${API_URL}/register`, {

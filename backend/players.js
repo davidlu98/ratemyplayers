@@ -153,7 +153,9 @@ const fetchMapleRanksData = async (region, name) => {
       avatarURL,
     };
   } catch (error) {
-    console.error("Error fetching MapleRanks data:", error.message);
+    console.error(
+      `Error fetching MapleRanks data for player ${name} from ${region}`
+    );
     return null;
   }
 };
@@ -180,11 +182,11 @@ router.get("/recent", async (req, res, next) => {
     const recentPlayers = recentReviews.map((review) => review.player);
     res.send(recentPlayers);
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 
-router.get("/most-reviewed", async (req, res, next) => {
+router.get("/most-reviewed", async (req, res) => {
   try {
     const mostReviewedPlayers = await prisma.player.findMany({
       select: {
@@ -206,7 +208,7 @@ router.get("/most-reviewed", async (req, res, next) => {
     });
     return res.send(mostReviewedPlayers);
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 
@@ -302,7 +304,7 @@ router.get("/:region/:name", async (req, res, next) => {
       return res.send(newPlayer);
     }
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 

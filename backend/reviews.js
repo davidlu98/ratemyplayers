@@ -156,10 +156,12 @@ router.delete("/:id", async (req, res, next) => {
       });
       return res.sendStatus(204);
     } else {
-      return res.sendStatus(401);
+      return res
+        .sendStatus(401)
+        .json("Error occurred when trying to delete a review");
     }
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 

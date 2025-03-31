@@ -16,17 +16,16 @@ import { useNavigate, useParams } from "react-router-dom";
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function ReportReview() {
-  const navigate = useNavigate();
-
-  const { region, playerName, reviewId } = useParams();
   const [reportType, setReportType] = useState("Hate Speech");
   const [reason, setReason] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const { region, playerName, reviewId } = useParams();
 
   const submitReview = async (event) => {
     event.preventDefault();
-    setErrorMessage("");
+    setErrorMessage(null);
 
     const token = window.localStorage.getItem("token");
 

@@ -11,7 +11,7 @@ export default function Home() {
   const [recentPlayers, setRecentPlayers] = useState([]);
   const [mostReviewedPlayers, setMostReviewedPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const fetchPlayerData = async () => {
     try {
@@ -31,6 +31,8 @@ export default function Home() {
       } else {
         setErrorMessage("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +43,12 @@ export default function Home() {
   return (
     <>
       {loading ? (
+        <Typography sx={{ color: "white", textAlign: "center", mt: "10px" }}>
+          Loading...
+        </Typography>
+      ) : errorMessage ? (
         <Box sx={{ mt: "10px", textAlign: "center" }}>
-          <Typography sx={{ color: "white" }}>Loading...</Typography>
+          <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
         </Box>
       ) : (
         <Box
@@ -55,9 +61,6 @@ export default function Home() {
         >
           <RecentReviews recentPlayers={recentPlayers} />
           <MostReviewedPlayers mostReviewedPlayers={mostReviewedPlayers} />
-          <Box sx={{ mt: "10px", textAlign: "center" }}>
-            <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
-          </Box>
         </Box>
       )}
     </>

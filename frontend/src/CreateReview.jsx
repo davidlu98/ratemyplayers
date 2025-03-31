@@ -10,35 +10,32 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-
 import { useNavigate, useParams } from "react-router-dom";
 
 const filledStar = "/filled-star2.png";
 
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+const ratingLabels = {
+  5: "Awesome",
+  4: "Great",
+  3: "Good",
+  2: "OK",
+  1: "Awful",
+};
+
 export default function CreateReview() {
-  const navigate = useNavigate();
-
-  const { region, playerName, playerId } = useParams();
-
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(3);
-
   const [anonymous, setAnonymous] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const API_URL = import.meta.env.VITE_BACKEND_URL;
-
-  const ratingLabels = {
-    5: "Awesome",
-    4: "Great",
-    3: "Good",
-    2: "OK",
-    1: "Awful",
-  };
+  const navigate = useNavigate();
+  const { region, playerName, playerId } = useParams();
 
   const submitReview = async (event) => {
     event.preventDefault();
-    setErrorMessage("");
+    setErrorMessage(null);
 
     const token = window.localStorage.getItem("token");
 

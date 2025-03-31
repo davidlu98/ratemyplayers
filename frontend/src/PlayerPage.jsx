@@ -18,17 +18,17 @@ import OverallRating from "./OverallRating";
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function PlayerPage() {
+  const [playerData, setPlayerData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
   const { region, name } = useParams(); // Get player name and region from URL
-  const [playerData, setPlayerData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const fetchPlayerData = async () => {
     try {
-      setError(null);
+      setErrorMessage(null);
       setLoading(true);
 
       const response = await axios.get(`${API_URL}/players/${region}/${name}`);
@@ -39,10 +39,13 @@ export default function PlayerPage() {
 
       const { data } = response;
 
-      // console.log(data);
       setPlayerData(data);
     } catch (error) {
-      setError(`The player **${name}** was not found on ${region}.`);
+      setErrorMessage(
+        <span>
+          The player <strong>{name}</strong> was not found on {region}.
+        </span>
+      );
     } finally {
       setLoading(false);
     }
@@ -55,8 +58,10 @@ export default function PlayerPage() {
   return (
     <>
       {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
+        <Typography sx={{ color: "white", textAlign: "center", mt: "10px" }}>
+          Loading...
+        </Typography>
+      ) : errorMessage ? (
         <Box sx={{ mt: "10px" }}>
           <Typography
             variant="h6"
@@ -67,7 +72,7 @@ export default function PlayerPage() {
           <Typography
             sx={{ color: "white", opacity: "0.8", textAlign: "center" }}
           >
-            The player <strong>{name}</strong> was not found on {region}.
+            {errorMessage}
           </Typography>
         </Box>
       ) : isMobile ? (
@@ -100,7 +105,6 @@ export default function PlayerPage() {
                 sx={{
                   backgroundColor: "#ff1744",
                   textTransform: "none",
-                  // margin: "8px 0px 0px 0px",
                   mt: "8px",
                 }}
               >
@@ -141,7 +145,7 @@ export default function PlayerPage() {
                 mt: "12px",
               }}
             >
-              Write a review
+              Write a Review
             </Button>
           </div>
           <PlayerReviews

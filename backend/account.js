@@ -67,10 +67,10 @@ router.get("/reviews", async (req, res, next) => {
 
       return res.send(groupedReviews);
     } else {
-      return res.sendStatus(401);
+      return res.status(401).json("Error when obtaining reviews.");
     }
   } catch (error) {
-    next(error);
+    return res.status(500).json("Something went wrong. Please try again.");
   }
 });
 
