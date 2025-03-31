@@ -171,15 +171,12 @@ export default function Account({ user }) {
                           >
                             <ReviewVote reviewId={review.id} />
                             <Button
-                              variant="contained"
                               sx={{
-                                backgroundColor: "#ff1744",
+                                color: "#ff1744",
                                 margin: "4px",
                                 textTransform: "none",
                               }}
                               onClick={() => {
-                                // deleteReview(review.id);
-                                // setSelectedPlayer(null);
                                 setConfirmDeleteModal(review.id);
                               }}
                             >
