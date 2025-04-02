@@ -5,6 +5,21 @@ const prisma = new PrismaClient();
 
 const MAX_COMMENT_SIZE = 200;
 
+const fs = require("fs");
+const path = require("path");
+
+const badWordsPath = path.join(__dirname, "badwords.txt");
+const badWords = fs
+  .readFileSync(badWordsPath, "utf-8")
+  .split("\n")
+  .map((word) => word.trim().toLowerCase()) // Trim whitespace and standardize case
+  .filter((word) => word.length > 0); // Remove empty lines
+
+const censorText = (text) => {
+  const regex = new RegExp(`\\b(${badWords.join("|")})\\b`, "gi");
+  return text.replace(regex, (match) => "*".repeat(match.length));
+};
+
 // all routes have prefix /reviews
 
 router.get("/", async (req, res, next) => {
@@ -134,12 +149,15 @@ router.post("/", async (req, res, next) => {
         return res.status(400).json("Invalid review content.");
       }
 
+      const censoredComment = censorText(comment);
+      // console.log(`Filtered Review: ${censoredComment}`);
+
       await prisma.review.create({
         data: {
           user_id: user.id,
           player_id: req.body.player_id,
           rating: Number(req.body.rating),
-          comment,
+          comment: censoredComment,
           anonymous: req.body.anonymous,
         },
       });
