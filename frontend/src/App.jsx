@@ -7,9 +7,10 @@ import axios from "axios";
 import Home from "./Home";
 import Navbar from "./Navbar";
 import Account from "./Account";
-
 import Login from "./Login";
 import Register from "./Register";
+import Feedback from "./Feedback";
+
 import PlayerPage from "./PlayerPage";
 import CreateReview from "./CreateReview";
 import ReportReview from "./ReportReview";
@@ -47,10 +48,11 @@ function App() {
     <div>
       <Navbar user={user} logout={logout} />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/feedback" element={<Feedback />} />
         <Route path="/account" element={<Account user={user} />} />
-        <Route path="/" element={<Home />} />
         <Route path="/players/:region/:name" element={<PlayerPage />} />
         <Route
           path="/write-review/:region/:playerName/:playerId"

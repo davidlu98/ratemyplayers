@@ -33,6 +33,7 @@ const login = require("./login");
 const account = require("./account");
 const vote = require("./vote");
 const reports = require("./reports");
+const feedback = require("./feedback");
 
 app.use("/players", players);
 app.use("/reviews", reviews);
@@ -41,6 +42,7 @@ app.use("/login", login);
 app.use("/account", account);
 app.use("/vote", vote);
 app.use("/reports", reports);
+app.use("/feedback", feedback);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

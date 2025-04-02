@@ -24,6 +24,8 @@ const ratingLabels = {
   1: "Awful",
 };
 
+const MAX_COMMENT_SIZE = 200;
+
 export default function CreateReview() {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(3);
@@ -123,7 +125,14 @@ export default function CreateReview() {
           rows={4}
           fullWidth
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={(e) => {
+            const input = e.target.value;
+            const regex = /^[a-zA-Z0-9,.!'" ]*$/;
+
+            if (input.length <= MAX_COMMENT_SIZE && regex.test(input)) {
+              setComment(input);
+            }
+          }}
           sx={{
             bgcolor: "#1f1f1f",
             "& .MuiInputLabel-root": { color: "white", opacity: 0.6 },
@@ -134,9 +143,12 @@ export default function CreateReview() {
             },
             "& .MuiInputBase-input": { color: "white" }, // Input text color (for single-line)
             "& .MuiInputBase-root textarea": { color: "white" }, // Textarea text color (for multiline)
-            mb: "16px",
+            mb: "2px",
           }}
         />
+        <Typography variant="body2" sx={{ color: "white", textAlign: "right" }}>
+          {comment.length}/{MAX_COMMENT_SIZE}
+        </Typography>
 
         {/* Submit Button and Anonymous Checkbox */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>

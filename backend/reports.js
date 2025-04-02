@@ -3,23 +3,9 @@ const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-// all routes have prefix /reports
+const MAX_REASON_SIZE = 200;
 
-router.get("/", async (req, res, next) => {
-  try {
-    const reviews = await prisma.review.findMany({
-      include: {
-        player: true,
-      },
-      orderBy: {
-        created_at: "desc",
-      },
-    });
-    res.send(reviews);
-  } catch (error) {
-    next(error);
-  }
-});
+// all routes have prefix /reports
 
 router.post("/", async (req, res) => {
   try {
@@ -27,8 +13,15 @@ router.post("/", async (req, res) => {
     const user = jwt.decode(token, "LUNA");
 
     if (user) {
-      if (req.body.reason.trim() === "") {
+      const reason = req.body.reason.trim();
+      const regex = /^[a-zA-Z0-9,.!'" ]*$/;
+
+      if (reason === "") {
         return res.status(400).json("Reason must not be empty.");
+      }
+
+      if (reason.length > MAX_REASON_SIZE || !regex.test(reason)) {
+        return res.status(400).json("Invalid review content.");
       }
 
       await prisma.report.create({
@@ -36,7 +29,7 @@ router.post("/", async (req, res) => {
           user_id: user.id,
           review_id: req.body.review_id,
           type: req.body.type,
-          reason: req.body.reason.trim(),
+          reason,
         },
       });
       return res.sendStatus(200);

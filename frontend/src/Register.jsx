@@ -94,7 +94,14 @@ export default function Register({ setUser }) {
             variant="outlined"
             fullWidth
             value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(e) => {
+              const input = e.target.value;
+              const regex = /^[a-zA-Z0-9]*$/;
+
+              if (regex.test(input)) {
+                setUsername(input);
+              }
+            }}
           />
           <TextField
             sx={{

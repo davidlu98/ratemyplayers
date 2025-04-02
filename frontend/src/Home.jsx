@@ -1,9 +1,17 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import axios from "axios";
 import RecentReviews from "./RecentReviews";
 import MostReviewedPlayers from "./MostReviewedPlayers";
+
+import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -12,6 +20,9 @@ export default function Home() {
   const [mostReviewedPlayers, setMostReviewedPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const fetchPlayerData = async () => {
     try {
@@ -54,13 +65,33 @@ export default function Home() {
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
             mt: 2,
           }}
         >
-          <RecentReviews recentPlayers={recentPlayers} />
-          <MostReviewedPlayers mostReviewedPlayers={mostReviewedPlayers} />
+          <Box
+            sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
+          >
+            <RecentReviews recentPlayers={recentPlayers} />
+            <MostReviewedPlayers mostReviewedPlayers={mostReviewedPlayers} />
+          </Box>
+          {!isMobile && (
+            <Box>
+              <Button
+                component={Link}
+                to="/feedback"
+                sx={{
+                  color: "white",
+                  bgcolor: "#ff1744",
+                  mb: "14px",
+                  textTransform: "none",
+                }}
+              >
+                Feedback
+              </Button>
+            </Box>
+          )}
         </Box>
       )}
     </>

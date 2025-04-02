@@ -62,7 +62,7 @@ export default function ButtonAppBar({ user, logout }) {
                   textDecoration: "none",
                 }}
               >
-                RateMyPlayers
+                MapleReviews
               </Link>
             </Typography>
           </Box>
@@ -84,7 +84,7 @@ export default function ButtonAppBar({ user, logout }) {
                   },
                 }}
               >
-                <MenuItem sx={{}}>
+                <MenuItem>
                   <SearchBar
                     isMobile={isMobile}
                     handleMenuClose={handleMenuClose}
@@ -101,6 +101,14 @@ export default function ButtonAppBar({ user, logout }) {
                       Account
                     </MenuItem>
                     <MenuItem
+                      component={Link}
+                      to="/feedback"
+                      onClick={handleMenuClose}
+                      sx={{ bgcolor: "#222222" }}
+                    >
+                      Feedback
+                    </MenuItem>
+                    <MenuItem
                       onClick={() => {
                         handleMenuClose();
                         logout();
@@ -114,19 +122,27 @@ export default function ButtonAppBar({ user, logout }) {
                   <Box>
                     <MenuItem
                       component={Link}
-                      to="/login"
-                      onClick={handleMenuClose}
-                      sx={{ bgcolor: "#222222" }}
-                    >
-                      Log In
-                    </MenuItem>
-                    <MenuItem
-                      component={Link}
                       to="/register"
                       onClick={handleMenuClose}
                       sx={{ bgcolor: "#222222" }}
                     >
                       Sign Up
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/feedback"
+                      onClick={handleMenuClose}
+                      sx={{ bgcolor: "#222222" }}
+                    >
+                      Feedback
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/login"
+                      onClick={handleMenuClose}
+                      sx={{ bgcolor: "#222222" }}
+                    >
+                      Log In
                     </MenuItem>
                   </Box>
                 )}
@@ -144,9 +160,9 @@ export default function ButtonAppBar({ user, logout }) {
                     component={Link}
                     to="/account"
                     color="inherit"
-                    style={{
-                      backgroundColor: "#ff1744",
-                      margin: "4px",
+                    sx={{
+                      bgcolor: "#ff1744",
+                      m: "4px",
                       textTransform: "none",
                     }}
                   >
@@ -154,9 +170,9 @@ export default function ButtonAppBar({ user, logout }) {
                   </Button>
                   <Button
                     color="inherit"
-                    style={{
-                      backgroundColor: "#ff1744",
-                      margin: "4px",
+                    sx={{
+                      bgcolor: "#ff1744",
+                      m: "4px",
                       textTransform: "none",
                     }}
                     onClick={() => {
@@ -168,14 +184,13 @@ export default function ButtonAppBar({ user, logout }) {
                 </Box>
               ) : (
                 <Box>
-                  {" "}
                   <Button
                     component={Link}
                     to="/login"
                     color="inherit"
-                    style={{
-                      backgroundColor: "#ff1744",
-                      margin: "4px",
+                    sx={{
+                      bgcolor: "#ff1744",
+                      m: "4px",
                       textTransform: "none",
                     }}
                   >
@@ -185,9 +200,9 @@ export default function ButtonAppBar({ user, logout }) {
                     component={Link}
                     to="/register"
                     color="inherit"
-                    style={{
-                      backgroundColor: "#ff1744",
-                      margin: "4px",
+                    sx={{
+                      bgcolor: "#ff1744",
+                      m: "4px",
                       textTransform: "none",
                     }}
                   >

@@ -1,46 +1,29 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
-import {
-  FormControl,
-  Select,
-  MenuItem,
-  Typography,
-  Box,
-  TextField,
-  Button,
-} from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { Typography, Box, TextField, Button } from "@mui/material";
+
+import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-const MAX_REASON_SIZE = 200;
+const MAX_FEEDBACK_SIZE = 300;
 
-export default function ReportReview() {
-  const [reportType, setReportType] = useState("Hate Speech");
-  const [reason, setReason] = useState("");
+export default function Feedback() {
+  const [feedback, setFeedback] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
-  const { region, playerName, reviewId } = useParams();
 
-  const submitReview = async (event) => {
+  const submitFeedback = async (event) => {
     event.preventDefault();
     setErrorMessage(null);
 
-    const token = window.localStorage.getItem("token");
-
     try {
-      await axios.post(
-        `${API_URL}/reports/`,
-        {
-          review_id: reviewId,
-          type: reportType,
-          reason,
-        },
-        { headers: { authorization: token } }
-      );
-      navigate(`/players/${region}/${playerName}`);
+      await axios.post(`${API_URL}/feedback/`, {
+        feedback,
+      });
+      navigate("/");
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data); // Display server error
@@ -62,7 +45,7 @@ export default function ReportReview() {
     >
       <Box
         component="form"
-        onSubmit={submitReview}
+        onSubmit={submitFeedback}
         sx={{
           maxWidth: { xs: "340px", sm: "600px" },
           width: "100%",
@@ -74,53 +57,24 @@ export default function ReportReview() {
       >
         <Box sx={{ display: "flex", justifyContent: "center", mb: "10px" }}>
           <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
-            Report a Review
+            Give Feedback
           </Typography>
         </Box>
 
-        {/* Report Type Dropdown */}
-        <FormControl size="small" sx={{ mb: "10px" }}>
-          <Select
-            value={reportType}
-            onChange={(event) => setReportType(event.target.value)}
-            sx={{
-              color: "white", // Selected text color
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#ff1744",
-              }, // Default border
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#ff8a80",
-              }, // Hover border
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#ff1744",
-              }, // Focus border
-              "& .MuiSvgIcon-root": { color: "#ff1744" }, // Arrow icon color
-            }}
-          >
-            <MenuItem value="Hate Speech">Hate Speech</MenuItem>
-            <MenuItem value="Harassment/Bullying">Harassment/Bullying</MenuItem>
-            <MenuItem value="Spam/Advertisement">Spam/Advertisement</MenuItem>
-            <MenuItem value="Inappropriate Content">
-              Inappropriate Content
-            </MenuItem>
-            <MenuItem value="Other">Other (Please Specify)</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* TextField for Report */}
+        {/* TextField for Feedback */}
         <TextField
-          label="Reason for reporting"
+          label="Give some feedback"
           variant="outlined"
           multiline
           rows={4}
           fullWidth
-          value={reason}
+          value={feedback}
           onChange={(e) => {
             const input = e.target.value;
             const regex = /^[a-zA-Z0-9,.!'" ]*$/;
 
-            if (input.length <= MAX_REASON_SIZE && regex.test(input)) {
-              setReason(input);
+            if (input.length <= MAX_FEEDBACK_SIZE && regex.test(input)) {
+              setFeedback(input);
             }
           }}
           sx={{
@@ -137,7 +91,7 @@ export default function ReportReview() {
           }}
         />
         <Typography variant="body2" sx={{ color: "white", textAlign: "right" }}>
-          {reason.length}/{MAX_REASON_SIZE}
+          {feedback.length}/{MAX_FEEDBACK_SIZE}
         </Typography>
 
         {/* Submit Button */}
@@ -150,7 +104,7 @@ export default function ReportReview() {
               color: "white",
             }}
           >
-            Submit Report
+            Submit Feedback
           </Button>
         </Box>
       </Box>
