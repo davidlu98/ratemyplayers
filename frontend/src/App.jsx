@@ -10,6 +10,7 @@ import Account from "./Account";
 import Login from "./Login";
 import Register from "./Register";
 import Feedback from "./Feedback";
+import BannedPage from "./BannedPage";
 
 import PlayerPage from "./PlayerPage";
 import CreateReview from "./CreateReview";
@@ -26,12 +27,21 @@ function App() {
 
     const tryToLogin = async () => {
       if (token) {
-        const response = await axios.get(`${API_URL}/account`, {
-          headers: { authorization: token },
-        });
+        try {
+          const response = await axios.get(`${API_URL}/account`, {
+            headers: { authorization: token },
+          });
 
-        setUser(response.data);
-        navigate("/");
+          setUser(response.data);
+          navigate("/");
+        } catch (error) {
+          console.log(error);
+          if (error.response?.status === 403) {
+            window.localStorage.removeItem("token");
+            setUser(null);
+            navigate("/banned");
+          }
+        }
       }
     };
 
@@ -53,7 +63,11 @@ function App() {
         <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/account" element={<Account user={user} />} />
-        <Route path="/players/:region/:name" element={<PlayerPage />} />
+        <Route path="/banned" element={<BannedPage />} />
+        <Route
+          path="/players/:region/:name"
+          element={<PlayerPage user={user} />}
+        />
         <Route
           path="/write-review/:region/:playerName/:playerId"
           element={<CreateReview />}

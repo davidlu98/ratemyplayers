@@ -5,6 +5,16 @@ const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const fs = require("fs");
+const path = require("path");
+
+const badWordsPath = path.join(__dirname, "badwords.txt");
+const badWords = fs
+  .readFileSync(badWordsPath, "utf-8")
+  .split("\n")
+  .map((word) => word.trim().toLowerCase()) // Trim whitespace and standardize case
+  .filter((word) => word.length > 0); // Remove empty lines
+
 // all routes have prefix /register
 
 router.post("/", async (req, res, next) => {
@@ -27,6 +37,10 @@ router.post("/", async (req, res, next) => {
       return res
         .status(400)
         .json("Username can only contain letters and numbers.");
+    }
+
+    if (badWords.includes(username)) {
+      return res.status(400).json("Username is inappropriate.");
     }
 
     if (password !== confirmedPassword) {

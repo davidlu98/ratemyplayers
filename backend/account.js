@@ -12,7 +12,17 @@ router.get("/", async (req, res, next) => {
     const user = jwt.decode(token, "LUNA");
 
     if (user) {
-      return res.send(user);
+      const dbUser = await prisma.user.findUnique({
+        where: {
+          username: user.username,
+        },
+      });
+
+      if (dbUser.banned) {
+        return res.status(403).json("This account has been banned.");
+      }
+
+      return res.send(dbUser);
     } else {
       return res.sendStatus(401);
     }

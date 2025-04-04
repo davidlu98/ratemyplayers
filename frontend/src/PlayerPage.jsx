@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Typography,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -17,7 +18,7 @@ import OverallRating from "./OverallRating";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-export default function PlayerPage() {
+export default function PlayerPage({ user }) {
   const [playerData, setPlayerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -98,18 +99,34 @@ export default function PlayerPage() {
               <RatingDistribution playerId={playerData.id} />
             </Box>
             <Box>
-              <Button
-                component={Link}
-                to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
-                variant="contained"
-                sx={{
-                  backgroundColor: "#ff1744",
-                  textTransform: "none",
-                  mt: "8px",
-                }}
+              <Tooltip
+                title={!user ? "Please log in to write a review" : ""}
+                arrow
+                disableHoverListener={!!user}
+                enterTouchDelay={0}
+                leaveTouchDelay={3000}
               >
-                Write a Review
-              </Button>
+                <span>
+                  <Button
+                    component={Link}
+                    to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
+                    variant="contained"
+                    disabled={!user}
+                    sx={{
+                      bgcolor: "#ff1744",
+                      textTransform: "none",
+                      mt: "12px",
+                      "&.Mui-disabled": {
+                        background: "#ff1744",
+                        color: "white",
+                        opacity: 0.5,
+                      },
+                    }}
+                  >
+                    Write a Review
+                  </Button>
+                </span>
+              </Tooltip>
             </Box>
           </Box>
 
@@ -135,20 +152,35 @@ export default function PlayerPage() {
                 <RatingDistribution playerId={playerData.id} />
               </div>
             </div>
-            <Button
-              component={Link}
-              to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
-              variant="contained"
-              sx={{
-                backgroundColor: "#ff1744",
-                textTransform: "none",
-                mt: "12px",
-              }}
+            <Tooltip
+              title={!user ? "Please log in to write a review" : ""}
+              arrow
+              disableHoverListener={!!user} // Disable the tooltip if the button is enabled
             >
-              Write a Review
-            </Button>
+              <span>
+                <Button
+                  component={Link}
+                  to={`/write-review/${playerData.region}/${playerData.current_name}/${playerData.id}`}
+                  variant="contained"
+                  disabled={!user}
+                  sx={{
+                    bgcolor: "#ff1744",
+                    textTransform: "none",
+                    mt: "12px",
+                    "&.Mui-disabled": {
+                      background: "#ff1744",
+                      color: "white",
+                      opacity: 0.5,
+                    },
+                  }}
+                >
+                  Write a Review
+                </Button>
+              </span>
+            </Tooltip>
           </div>
           <PlayerReviews
+            user={user}
             region={playerData.region}
             playerName={playerData.current_name}
             playerId={playerData.id}

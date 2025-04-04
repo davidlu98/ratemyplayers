@@ -1,6 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Typography, Box, Card, Pagination, Button } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Card,
+  Pagination,
+  Button,
+  Tooltip,
+} from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
 import axios from "axios";
 import SingleReview from "./SingleReview";
@@ -11,7 +18,7 @@ import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-export default function PlayerReviews({ region, playerName, playerId }) {
+export default function PlayerReviews({ user, region, playerName, playerId }) {
   const [reviews, setReviews] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
@@ -96,16 +103,31 @@ export default function PlayerReviews({ region, playerName, playerId }) {
             <SingleReview review={review} />
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <ReviewVote reviewId={review.id} />
-              <Button
-                component={Link}
-                to={`/report-review/${region}/${playerName}/${review.id}`}
-                sx={{
-                  textTransform: "none",
-                  color: "#ff1744",
-                }}
+              <Tooltip
+                title={!user ? "Please log in to report a review" : ""}
+                arrow
+                disableHoverListener={!!user}
+                enterTouchDelay={0}
+                leaveTouchDelay={3000}
               >
-                <FlagIcon />
-              </Button>
+                <span>
+                  <Button
+                    disabled={!user}
+                    component={Link}
+                    to={`/report-review/${region}/${playerName}/${review.id}`}
+                    sx={{
+                      textTransform: "none",
+                      color: "#ff1744",
+                      "&.Mui-disabled": {
+                        color: "white",
+                        opacity: 0.5,
+                      },
+                    }}
+                  >
+                    <FlagIcon />
+                  </Button>
+                </span>
+              </Tooltip>
             </Box>
           </Card>
         ))}

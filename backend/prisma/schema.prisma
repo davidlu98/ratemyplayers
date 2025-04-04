@@ -54,6 +54,7 @@ model User {
   username   String   @unique @db.VarChar(12)
   password   String   @unique @db.VarChar(255)
   created_at DateTime @default(now())
+  banned     Boolean  @default(false)
   Report     Report[]
   reviews    Review[]
   Vote       Vote[]

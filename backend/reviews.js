@@ -3,24 +3,114 @@ const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+// all routes have prefix /reviews
+
 const MAX_COMMENT_SIZE = 200;
 
 const fs = require("fs");
 const path = require("path");
+const levenshtein = require("fast-levenshtein");
 
-const badWordsPath = path.join(__dirname, "badwords.txt");
-const badWords = fs
-  .readFileSync(badWordsPath, "utf-8")
-  .split("\n")
-  .map((word) => word.trim().toLowerCase()) // Trim whitespace and standardize case
-  .filter((word) => word.length > 0); // Remove empty lines
+const loadBadWords = (filename) =>
+  fs
+    .readFileSync(path.join(__dirname, filename), "utf-8")
+    .split("\n")
+    .map((word) => word.trim().toLowerCase())
+    .filter((word) => word.length > 0);
 
-const censorText = (text) => {
-  const regex = new RegExp(`\\b(${badWords.join("|")})\\b`, "gi");
-  return text.replace(regex, (match) => "*".repeat(match.length));
+const badWords = loadBadWords("badwords.txt");
+const extremeBadWords = loadBadWords("extremebadwords.txt");
+
+// Map for Regex replacement (Example: s3xy & sexy)
+const leetMap = {
+  a: "[a4]",
+  e: "[e3]",
+  i: "[i1l!]",
+  o: "[o0]",
+  s: "[s5]",
+  t: "[t7]",
 };
 
-// all routes have prefix /reviews
+const generateRegex = (word) => {
+  let regexStr = word
+    .split("")
+    .map((char) => leetMap[char.toLowerCase()] || char)
+    .join("");
+  return new RegExp(`\\b${regexStr}\\b`, "gi"); // Match whole word
+};
+
+const badWordsRegex = badWords.map(generateRegex);
+const extremeBadWordsRegex = extremeBadWords.map(generateRegex);
+
+// Check for similar words based off of Levenshtein Distance (LD1/LD2)
+const isSimilarToBadWord = (word, wordList, maxDistance) => {
+  for (const badWord of wordList) {
+    if (levenshtein.get(word.toLowerCase(), badWord) <= maxDistance) {
+      return true;
+    }
+  }
+  return false;
+};
+
+// Remove spaces from a string
+const removeSpaces = (text) => text.replace(/\s+/g, "");
+
+const censorText = (text) => {
+  return text
+    .split(/\b/)
+    .map((word) => {
+      const normalizedWord = word.toLowerCase();
+
+      // Check if it matches a bad word
+      if (
+        badWordsRegex.some((regex) => regex.test(word)) ||
+        isSimilarToBadWord(normalizedWord, badWords, 1)
+      ) {
+        return "*".repeat(word.length);
+      }
+
+      // Check if it matches an extreme bad word
+      if (
+        extremeBadWordsRegex.some((regex) => regex.test(word)) ||
+        isSimilarToBadWord(normalizedWord, extremeBadWords, 2)
+      ) {
+        return "*".repeat(word.length);
+      }
+
+      // Detect word fragments
+      for (const badWord of [...badWords, ...extremeBadWords]) {
+        if (normalizedWord.includes(badWord)) {
+          return "*".repeat(word.length);
+        }
+      }
+
+      // Detect space-separated obfuscations
+      const compactedWord = removeSpaces(normalizedWord);
+      if (
+        [...badWords, ...extremeBadWords].some((badWord) =>
+          compactedWord.includes(badWord)
+        )
+      ) {
+        return "*".repeat(word.length);
+      }
+
+      return word;
+    })
+    .join("");
+};
+
+// const censorText = (text) => {
+//   return text
+//     .split(/\b/)
+//     .map((word) =>
+//       badWordsRegex.some((regex) => regex.test(word)) ||
+//       extremeBadWordsRegex.some((regex) => regex.test(word)) ||
+//       isSimilarToBadWord(word)
+//         ? "*".repeat(word.length)
+//         : word
+//     )
+//     .join("");
+// };
 
 router.get("/", async (req, res, next) => {
   try {
@@ -150,7 +240,7 @@ router.post("/", async (req, res, next) => {
       }
 
       const censoredComment = censorText(comment);
-      // console.log(`Filtered Review: ${censoredComment}`);
+      console.log(`Filtered Review: ${censoredComment}`);
 
       await prisma.review.create({
         data: {

@@ -11,6 +11,8 @@ import axios from "axios";
 import RecentReviews from "./RecentReviews";
 import MostReviewedPlayers from "./MostReviewedPlayers";
 
+import HomeSkeleton from "./HomeSkeleton";
+
 import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
@@ -54,9 +56,7 @@ export default function Home() {
   return (
     <>
       {loading ? (
-        <Typography sx={{ color: "white", textAlign: "center", mt: "10px" }}>
-          Loading...
-        </Typography>
+        <HomeSkeleton />
       ) : errorMessage ? (
         <Box sx={{ mt: "10px", textAlign: "center" }}>
           <Typography sx={{ color: "red" }}>{errorMessage}</Typography>

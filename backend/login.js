@@ -20,6 +20,10 @@ router.post("/", async (req, res, next) => {
     if (!user) {
       return res.status(401).json("Invalid username or password.");
     } else {
+      if (user.banned) {
+        return res.status(403).json("This account has been banned.");
+      }
+
       const isCorrectPassword = bcrypt.compareSync(password, user.password);
 
       if (isCorrectPassword) {
