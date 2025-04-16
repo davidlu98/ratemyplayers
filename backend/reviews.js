@@ -3,114 +3,106 @@ const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const fs = require("fs");
+const path = require("path");
+
 // all routes have prefix /reviews
 
 const MAX_COMMENT_SIZE = 200;
 
-const fs = require("fs");
-const path = require("path");
-const levenshtein = require("fast-levenshtein");
+const badWords = fs
+  .readFileSync(path.join(__dirname, "badwords.txt"), "utf8")
+  .split("\n")
+  .map((word) => word.trim().toLowerCase())
+  .filter((word) => word.length > 0);
 
-const loadBadWords = (filename) =>
-  fs
-    .readFileSync(path.join(__dirname, filename), "utf-8")
-    .split("\n")
-    .map((word) => word.trim().toLowerCase())
-    .filter((word) => word.length > 0);
-
-const badWords = loadBadWords("badwords.txt");
-const extremeBadWords = loadBadWords("extremebadwords.txt");
-
-// Map for Regex replacement (Example: s3xy & sexy)
 const leetMap = {
-  a: "[a4]",
+  a: "[a24]",
   e: "[e3]",
-  i: "[i1l!]",
+  i: "[i1!]",
   o: "[o0]",
   s: "[s5]",
   t: "[t7]",
+  b: "[b8]",
+  g: "[g9]",
+  z: "[z2]",
 };
 
-const generateRegex = (word) => {
-  let regexStr = word
+function buildLeetRegex(word) {
+  const pattern = word
+    .toLowerCase()
     .split("")
-    .map((char) => leetMap[char.toLowerCase()] || char)
+    .map((char) => leetMap[char] || char)
     .join("");
-  return new RegExp(`\\b${regexStr}\\b`, "gi"); // Match whole word
-};
+  return new RegExp(pattern, "gi"); // global + case-insensitive
+}
 
-const badWordsRegex = badWords.map(generateRegex);
-const extremeBadWordsRegex = extremeBadWords.map(generateRegex);
+function extraCensor(text, badWords) {
+  for (const word of badWords) {
+    const regex = buildLeetRegex(word);
+    text = text.replace(regex, (match) => "*".repeat(match.length));
+  }
+  return text;
+}
 
-// Check for similar words based off of Levenshtein Distance (LD1/LD2)
-const isSimilarToBadWord = (word, wordList, maxDistance) => {
-  for (const badWord of wordList) {
-    if (levenshtein.get(word.toLowerCase(), badWord) <= maxDistance) {
-      return true;
+const {
+  RegExpMatcher,
+  englishDataset,
+  englishRecommendedTransformers,
+} = require("obscenity");
+
+const matcher = new RegExpMatcher({
+  ...englishDataset.build(),
+  ...englishRecommendedTransformers,
+});
+
+function censorFromMatches(originalText, matches) {
+  // Sort matches by startIndex to ensure processing is done in order
+  matches.sort((a, b) => a.startIndex - b.startIndex);
+
+  let censored = "";
+  let currentIndex = 0;
+
+  for (const match of matches) {
+    // Handle skipped area before this match
+    if (match.startIndex > currentIndex) {
+      censored += originalText.slice(currentIndex, match.startIndex);
+    }
+
+    // Replace the matched word with asterisks of the same length
+    censored += "*".repeat(match.endIndex - match.startIndex + 1);
+
+    // Update current index to just after the match
+    currentIndex = match.endIndex + 1;
+  }
+
+  // Append any remaining text after the last match
+  if (currentIndex < originalText.length) {
+    censored += originalText.slice(currentIndex);
+  }
+
+  return censored;
+}
+
+function mergeMatches(matches) {
+  const result = [];
+
+  matches.sort((a, b) => a.startIndex - b.startIndex);
+
+  for (const match of matches) {
+    const last = result[result.length - 1];
+
+    if (!last || match.startIndex > last.endIndex) {
+      result.push(match);
+    } else {
+      // Merge overlapping match
+      last.endIndex = Math.max(last.endIndex, match.endIndex);
+      last.matchLength = last.endIndex - last.startIndex + 1;
     }
   }
-  return false;
-};
 
-// Remove spaces from a string
-const removeSpaces = (text) => text.replace(/\s+/g, "");
-
-const censorText = (text) => {
-  return text
-    .split(/\b/)
-    .map((word) => {
-      const normalizedWord = word.toLowerCase();
-
-      // Check if it matches a bad word
-      if (
-        badWordsRegex.some((regex) => regex.test(word)) ||
-        isSimilarToBadWord(normalizedWord, badWords, 1)
-      ) {
-        return "*".repeat(word.length);
-      }
-
-      // Check if it matches an extreme bad word
-      if (
-        extremeBadWordsRegex.some((regex) => regex.test(word)) ||
-        isSimilarToBadWord(normalizedWord, extremeBadWords, 2)
-      ) {
-        return "*".repeat(word.length);
-      }
-
-      // Detect word fragments
-      for (const badWord of [...badWords, ...extremeBadWords]) {
-        if (normalizedWord.includes(badWord)) {
-          return "*".repeat(word.length);
-        }
-      }
-
-      // Detect space-separated obfuscations
-      const compactedWord = removeSpaces(normalizedWord);
-      if (
-        [...badWords, ...extremeBadWords].some((badWord) =>
-          compactedWord.includes(badWord)
-        )
-      ) {
-        return "*".repeat(word.length);
-      }
-
-      return word;
-    })
-    .join("");
-};
-
-// const censorText = (text) => {
-//   return text
-//     .split(/\b/)
-//     .map((word) =>
-//       badWordsRegex.some((regex) => regex.test(word)) ||
-//       extremeBadWordsRegex.some((regex) => regex.test(word)) ||
-//       isSimilarToBadWord(word)
-//         ? "*".repeat(word.length)
-//         : word
-//     )
-//     .join("");
-// };
+  return result;
+}
 
 router.get("/", async (req, res, next) => {
   try {
@@ -239,15 +231,19 @@ router.post("/", async (req, res, next) => {
         return res.status(400).json("Invalid review content.");
       }
 
-      const censoredComment = censorText(comment);
-      console.log(`Filtered Review: ${censoredComment}`);
+      const matches = matcher.getAllMatches(comment);
+      const cleanedMatches = mergeMatches(matches);
+      let censoredText = censorFromMatches(comment, cleanedMatches);
+      censoredText = extraCensor(censoredText, badWords);
+
+      console.log(censoredText);
 
       await prisma.review.create({
         data: {
           user_id: user.id,
           player_id: req.body.player_id,
           rating: Number(req.body.rating),
-          comment: censoredComment,
+          comment: censoredText,
           anonymous: req.body.anonymous,
         },
       });

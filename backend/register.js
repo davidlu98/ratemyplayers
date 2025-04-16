@@ -8,29 +8,73 @@ const prisma = new PrismaClient();
 const fs = require("fs");
 const path = require("path");
 
-const badWordsPath = path.join(__dirname, "badwords.txt");
-const badWords = fs
-  .readFileSync(badWordsPath, "utf-8")
-  .split("\n")
-  .map((word) => word.trim().toLowerCase()) // Trim whitespace and standardize case
-  .filter((word) => word.length > 0); // Remove empty lines
-
 // all routes have prefix /register
+
+const badWords = fs
+  .readFileSync(path.join(__dirname, "badwords.txt"), "utf8")
+  .split("\n")
+  .map((word) => word.trim().toLowerCase())
+  .filter((word) => word.length > 0);
+
+const leetMap = {
+  a: "[a24]",
+  e: "[e3]",
+  i: "[i1!]",
+  o: "[o0]",
+  s: "[s5]",
+  t: "[t7]",
+  b: "[b8]",
+  g: "[g9]",
+  z: "[z2]",
+};
+
+function buildLeetRegex(word) {
+  const pattern = word
+    .toLowerCase()
+    .split("")
+    .map((char) => leetMap[char] || char)
+    .join("");
+  return new RegExp(pattern, "gi"); // global + case-insensitive
+}
+
+const {
+  RegExpMatcher,
+  englishDataset,
+  englishRecommendedTransformers,
+} = require("obscenity");
+
+const matcher = new RegExpMatcher({
+  ...englishDataset.build(),
+  ...englishRecommendedTransformers,
+});
+
+function isCleanUsername(username, badWords) {
+  const lowerUsername = username.toLowerCase();
+
+  for (const word of badWords) {
+    const regex = buildLeetRegex(word);
+    if (regex.test(lowerUsername)) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 router.post("/", async (req, res, next) => {
   try {
     const { username, password, confirmedPassword } = req.body;
 
-    if (username !== username.trim()) {
-      return res
-        .status(400)
-        .json("Username cannot have leading or trailing spaces.");
-    }
-
     if (username.length < 4 || username.length > 12) {
       return res
         .status(400)
         .json("Username must be between 4 and 12 characters.");
+    }
+
+    if (username !== username.trim()) {
+      return res
+        .status(400)
+        .json("Username cannot have leading or trailing spaces.");
     }
 
     if (!/^[a-zA-Z0-9]+$/.test(username)) {
@@ -39,8 +83,19 @@ router.post("/", async (req, res, next) => {
         .json("Username can only contain letters and numbers.");
     }
 
-    if (badWords.includes(username)) {
+    const matches = matcher.getAllMatches(username);
+    if (matches) {
       return res.status(400).json("Username is inappropriate.");
+    }
+
+    if (!isCleanUsername(username, badWords)) {
+      return res.status(400).json("Username is inappropriate.");
+    }
+
+    if (password.length < 6 || username.length > 255) {
+      return res
+        .status(400)
+        .json("Password must be at least 6 characters long.");
     }
 
     if (password !== confirmedPassword) {
@@ -51,12 +106,6 @@ router.post("/", async (req, res, next) => {
       return res
         .status(400)
         .json("Password cannot have leading or trailing spaces.");
-    }
-
-    if (password.length < 6 || username.length > 255) {
-      return res
-        .status(400)
-        .json("Password must be at least 6 characters long.");
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
