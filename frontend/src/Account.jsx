@@ -9,10 +9,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+
 import SingleReview from "./SingleReview";
 import PlayerInformation from "./PlayerInformation";
 import ReviewVote from "./ReviewVote";
 import DeleteIcon from "@mui/icons-material/Delete";
+
+import AccountSkeleton from "./AccountSkeleton";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -83,9 +86,7 @@ export default function Account({ user }) {
   return (
     <>
       {loading ? (
-        <Typography sx={{ color: "white", textAlign: "center", mt: "10px" }}>
-          Loading...
-        </Typography>
+        <AccountSkeleton user={user} />
       ) : (
         <Box
           sx={{

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Skeleton, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 
 export default function PlayerInformationSkeleton() {
   return (

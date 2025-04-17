@@ -1,14 +1,6 @@
 import React from "react";
 
-import {
-  Button,
-  Box,
-  Typography,
-  Skeleton,
-  Card,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 
 export default function OverallRatingSkeleton() {
   return (

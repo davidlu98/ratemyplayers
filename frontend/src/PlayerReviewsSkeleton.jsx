@@ -1,13 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-import {
-  Box,
-  Typography,
-  Pagination,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Typography, Pagination } from "@mui/material";
 
 import SortMenu from "./SortMenu";
 
