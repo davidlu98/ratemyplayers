@@ -84,7 +84,9 @@ router.post("/", async (req, res, next) => {
     }
 
     const matches = matcher.getAllMatches(username);
-    if (matches) {
+    const hasMatches = matches.length > 0;
+
+    if (hasMatches) {
       return res.status(400).json("Username is inappropriate.");
     }
 

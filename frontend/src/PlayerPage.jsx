@@ -16,6 +16,8 @@ import RatingDistribution from "./RatingDistribution";
 import PlayerInformation from "./PlayerInformation";
 import OverallRating from "./OverallRating";
 
+import PlayerPageSkeleton from "./PlayerPageSkeleton";
+
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function PlayerPage({ user }) {
@@ -59,9 +61,7 @@ export default function PlayerPage({ user }) {
   return (
     <>
       {loading ? (
-        <Typography sx={{ color: "white", textAlign: "center", mt: "10px" }}>
-          Loading...
-        </Typography>
+        <PlayerPageSkeleton user={user} />
       ) : errorMessage ? (
         <Box sx={{ mt: "10px" }}>
           <Typography
