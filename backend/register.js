@@ -94,7 +94,7 @@ router.post("/", async (req, res, next) => {
       return res.status(400).json("Username is inappropriate.");
     }
 
-    if (password.length < 6 || username.length > 255) {
+    if (password.length < 6 || password.length > 255) {
       return res
         .status(400)
         .json("Password must be at least 6 characters long.");
