@@ -7,7 +7,7 @@ const app = express();
 // Allow multiple origins
 const allowedOrigins = [
   "http://localhost:5173", // Local frontend
-  "https://ywratemyplayers2025.onrender.com", // Deployed frontend
+  "https://maplereviews.onrender.com", // Deployed frontend
 ];
 
 app.use(
