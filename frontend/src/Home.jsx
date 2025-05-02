@@ -39,6 +39,10 @@ export default function Home() {
     try {
       setLoading(true);
 
+      // const characterSearch = await axios.get(`${API_URL}/players/NA/mikhail`);
+
+      // console.log(characterSearch.data);
+
       const { data } = await axios.get(
         `${API_URL}/players/hot?range=${range}&page=${page}`,
         {
