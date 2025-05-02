@@ -270,18 +270,33 @@ router.delete("/:id", async (req, res, next) => {
     const token = req.headers.authorization;
     const user = jwt.decode(token, "LUNA");
 
-    if (user) {
-      await prisma.review.delete({
-        where: {
-          id: req.params.id,
-        },
-      });
-      return res.sendStatus(204);
-    } else {
-      return res
-        .sendStatus(401)
-        .json("Error occurred when trying to delete a review");
+    if (!user) {
+      return res.status(401).json("Unauthorized");
     }
+
+    const review = await prisma.review.findUnique({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!review) {
+      return res.status(404).json("Review not found");
+    }
+
+    if (review.user_id !== user.id) {
+      return res
+        .status(403)
+        .json("You do not have permission to delete this review.");
+    }
+
+    await prisma.review.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    return res.sendStatus(204);
   } catch (error) {
     return res.status(500).json("Something went wrong. Please try again.");
   }
