@@ -39,17 +39,12 @@ export default function Home() {
     try {
       setLoading(true);
 
-      // const characterSearch = await axios.get(`${API_URL}/players/NA/mikhail`);
-
-      // console.log(characterSearch.data);
-
       const { data } = await axios.get(
         `${API_URL}/players/hot?range=${range}&page=${page}`,
         {
           params: { range, page },
         }
       );
-      // console.log("got hot players", data);
 
       setHotPlayers(data.leaderboard);
       setTotalPages(data.totalPages);
@@ -77,7 +72,8 @@ export default function Home() {
       ) : errorMessage ? (
         <Box sx={{ mt: "10px", textAlign: "center" }}>
           <Typography sx={{ color: "red" }}>
-            UPDATE: Website will be down for a few hours
+            UPDATE: Website occasionally goes down for updates, or other
+            reasons.
           </Typography>
           <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
         </Box>
@@ -90,13 +86,6 @@ export default function Home() {
             mt: 2,
           }}
         >
-          {/* <Box sx={{ textAlign: "center" }}>
-            <Typography sx={{ color: "red", mb: "4px" }}>
-              UPDATE: I'm currently looking into issues with names not showing
-              up.
-            </Typography>
-          </Box> */}
-
           <Box
             sx={{
               display: "flex",
