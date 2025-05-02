@@ -188,97 +188,6 @@ router.get("/:region/:name", async (req, res, next) => {
   try {
     const { region, name } = req.params;
 
-    const link =
-      region === "NA"
-        ? `https://www.nexon.com/api/maplestory/no-auth/v1/ranking/na?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`
-        : `https://www.nexon.com/api/maplestory/no-auth/v1/ranking/eu?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`;
-
-    const { data } = await axios.get(link);
-
-    // console.log(data);
-
-    if (data.totalCount === 0) {
-      return res.status(500).json("Something went wrong. Please try again.");
-    }
-
-    const character = data.ranks[0];
-    const characterName = character.characterName;
-    const level = character.level;
-    const characterImgURL = character.characterImgURL;
-    let server = character.worldName;
-    let jobName = character.jobName;
-    const jobDetail = character.jobDetail;
-
-    if (server === "Kronos") {
-      server = "Reboot Kronos";
-    }
-
-    if (server === "Hyperion") {
-      server = "Reboot Hyperion";
-    }
-
-    if (jobName === "Warrior") {
-      if (jobDetail === 12) {
-        jobName = "Hero";
-      }
-      if (jobDetail === 22) {
-        jobName = "Paladin";
-      }
-      if (jobDetail === 32) {
-        jobName = "Dark Knight";
-      }
-    }
-
-    if (jobName === "Magician") {
-      if (jobDetail === 12) {
-        jobName = "Fire Poison Archmage";
-      }
-      if (jobDetail === 22) {
-        jobName = "Ice Lightning Archmage";
-      }
-      if (jobDetail === 32) {
-        jobName = "Bishop";
-      }
-    }
-
-    if (jobName === "Thief") {
-      if (jobDetail === 12) {
-        jobName = "Night Lord";
-      }
-      if (jobDetail === 22) {
-        jobName = "Shadower";
-      }
-    }
-
-    if (jobName === "Bowman") {
-      if (jobDetail === 12) {
-        jobName = "Bowmaster";
-      }
-      if (jobDetail === 22) {
-        jobName = "Marksman";
-      }
-    }
-
-    if (jobName === "Pirate") {
-      if (jobDetail === 12) {
-        jobName = "Buccaneer";
-      }
-      if (jobDetail === 22) {
-        jobName = "Corsair";
-      }
-      if (jobDetail === 32) {
-        jobName = "Cannon Master";
-      }
-    }
-
-    const jobInformation = getJobCategory(jobName);
-    // console.log(jobName);
-    // console.log(jobInformation);
-    // console.log(characterName);
-    // console.log(level);
-    // console.log(characterImgURL);
-    // console.log(worldName);
-
     let player = await prisma.player.findUnique({
       where: {
         current_name_lower: name.toLowerCase(),
@@ -287,26 +196,98 @@ router.get("/:region/:name", async (req, res, next) => {
     });
 
     if (player) {
-      if (
-        player.server === server &&
-        player.branch === jobInformation.branch &&
-        level >= player.level
-      ) {
-        const updatedPlayer = await prisma.player.update({
-          data: {
-            level: Number(level),
-            archetype: jobInformation.archetype,
-            job: jobName,
-            avatar: characterImgURL,
-          },
-          where: {
-            id: player.id,
-          },
-        });
-
-        return res.send(updatedPlayer);
-      }
+      return res.send(player);
     } else {
+      const link =
+        region === "NA"
+          ? `https://www.nexon.com/api/maplestory/no-auth/v1/ranking/na?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`
+          : `https://www.nexon.com/api/maplestory/no-auth/v1/ranking/eu?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`;
+
+      const { data } = await axios.get(link);
+      // console.log(data);
+
+      if (data.totalCount === 0) {
+        return res.status(500).json("Something went wrong. Please try again.");
+      }
+
+      const character = data.ranks[0];
+      const characterName = character.characterName;
+      const level = character.level;
+      const characterImgURL = character.characterImgURL;
+      let server = character.worldName;
+      let jobName = character.jobName;
+      const jobDetail = character.jobDetail;
+
+      if (server === "Kronos") {
+        server = "Reboot Kronos";
+      }
+
+      if (server === "Hyperion") {
+        server = "Reboot Hyperion";
+      }
+
+      if (jobName === "Warrior") {
+        if (jobDetail === 12) {
+          jobName = "Hero";
+        }
+        if (jobDetail === 22) {
+          jobName = "Paladin";
+        }
+        if (jobDetail === 32) {
+          jobName = "Dark Knight";
+        }
+      }
+
+      if (jobName === "Magician") {
+        if (jobDetail === 12) {
+          jobName = "Fire Poison Archmage";
+        }
+        if (jobDetail === 22) {
+          jobName = "Ice Lightning Archmage";
+        }
+        if (jobDetail === 32) {
+          jobName = "Bishop";
+        }
+      }
+
+      if (jobName === "Thief") {
+        if (jobDetail === 12) {
+          jobName = "Night Lord";
+        }
+        if (jobDetail === 22) {
+          jobName = "Shadower";
+        }
+      }
+
+      if (jobName === "Bowman") {
+        if (jobDetail === 12) {
+          jobName = "Bowmaster";
+        }
+        if (jobDetail === 22) {
+          jobName = "Marksman";
+        }
+      }
+
+      if (jobName === "Pirate") {
+        if (jobDetail === 12) {
+          jobName = "Buccaneer";
+        }
+        if (jobDetail === 22) {
+          jobName = "Corsair";
+        }
+        if (jobDetail === 32) {
+          jobName = "Cannon Master";
+        }
+      }
+
+      const jobInformation = getJobCategory(jobName);
+      // console.log(jobName);
+      // console.log(jobInformation);
+      // console.log(characterName);
+      // console.log(level);
+      // console.log(characterImgURL);
+      // console.log(worldName);
+
       // Create the player
       const newPlayer = await prisma.player.create({
         data: {
@@ -324,8 +305,6 @@ router.get("/:region/:name", async (req, res, next) => {
 
       return res.send(newPlayer);
     }
-
-    res.send(data);
   } catch (error) {
     return res.status(500).json("Something went wrong. Please try again.");
   }
