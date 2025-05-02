@@ -139,7 +139,7 @@ const fetchMapleRanksData = async (region, name) => {
 
     const { username, level, job, server } = parseText(description);
 
-    console.log(username);
+    // console.log(username);
 
     if (!username || !level || !job || !server) {
       return null;
@@ -211,6 +211,96 @@ router.get("/most-reviewed", async (req, res) => {
     });
     return res.send(mostReviewedPlayers);
   } catch (error) {
+    return res.status(500).json("Something went wrong. Please try again.");
+  }
+});
+
+router.get("/hot", async (req, res) => {
+  try {
+    const range = Array.isArray(req.query.range)
+      ? req.query.range[0]
+      : req.query.range;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
+
+    // console.log(range, page);
+
+    const intervalMap = {
+      "1h": 1 * 60 * 60 * 1000,
+      "1d": 24 * 60 * 60 * 1000,
+      "1w": 7 * 24 * 60 * 60 * 1000,
+      "1m": 30 * 24 * 60 * 60 * 1000,
+    };
+
+    const selectedRange = intervalMap[range] || intervalMap["1d"];
+    const since = new Date(Date.now() - selectedRange);
+
+    // Get total count of distinct player IDs in the review range
+    const totalPlayersResult = await prisma.review.groupBy({
+      by: ["player_id"],
+      where: {
+        created_at: {
+          gte: since,
+        },
+      },
+    });
+
+    const totalPlayers = totalPlayersResult.length;
+    const totalPages = Math.ceil(totalPlayers / pageSize);
+
+    // Get paginated player_ids sorted by review count
+    const reviewGroups = await prisma.review.groupBy({
+      by: ["player_id"],
+      where: {
+        created_at: {
+          gte: since,
+        },
+      },
+      _count: {
+        player_id: true,
+      },
+      orderBy: {
+        _count: {
+          player_id: "desc",
+        },
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    const playerIds = reviewGroups.map((group) => group.player_id);
+
+    const players = await prisma.player.findMany({
+      where: {
+        id: { in: playerIds },
+      },
+      select: {
+        id: true,
+        current_name: true,
+        server: true,
+        region: true,
+        level: true,
+        job: true,
+      },
+    });
+
+    // Maintain correct order (based on reviewGroups)
+    const leaderboard = reviewGroups.map((group) => {
+      const player = players.find((p) => p.id === group.player_id);
+      return {
+        player_id: group.player_id,
+        review_count: group._count.player_id,
+        ...player,
+      };
+    });
+
+    res.json({
+      leaderboard,
+      totalPages,
+      totalPlayers,
+    });
+  } catch (error) {
+    console.error("Error in /players/hot:", error);
     return res.status(500).json("Something went wrong. Please try again.");
   }
 });

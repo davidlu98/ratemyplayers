@@ -190,7 +190,6 @@ router.get("/:player_id", async (req, res) => {
         rating: true,
         comment: true,
         created_at: true,
-        anonymous: true,
         player: true,
         user: {
           select: { username: true },
@@ -199,13 +198,8 @@ router.get("/:player_id", async (req, res) => {
       orderBy,
     });
 
-    const sanitizedReviews = reviews.map((review) => ({
-      ...review,
-      user: review.anonymous ? null : review.user,
-    }));
-
     res.json({
-      reviews: sanitizedReviews,
+      reviews,
       totalPages: Math.ceil(totalReviews / pageSize),
       totalReviews,
     });
@@ -222,6 +216,21 @@ router.post("/", async (req, res, next) => {
     if (user) {
       const comment = req.body.comment.trim();
       const regex = /^[a-zA-Z0-9,.!'" ]*$/;
+
+      const existingReview = await prisma.review.findUnique({
+        where: {
+          user_id_player_id: {
+            user_id: user.id,
+            player_id: req.body.player_id,
+          },
+        },
+      });
+
+      if (existingReview) {
+        return res
+          .status(400)
+          .json("You've already made a review for this player.");
+      }
 
       if (comment === "") {
         return res.status(400).json("Review must not be empty.");
@@ -244,9 +253,9 @@ router.post("/", async (req, res, next) => {
           player_id: req.body.player_id,
           rating: Number(req.body.rating),
           comment: censoredText,
-          anonymous: req.body.anonymous,
         },
       });
+
       return res.sendStatus(200);
     } else {
       return res.status(401).json("Must be logged in to submit a review.");

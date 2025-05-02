@@ -35,39 +35,11 @@ export default function HomeSkeleton() {
           }}
         >
           <Typography sx={{ color: "white", margin: "10px" }}>
-            Recent reviews of the day
+            Hot Players
           </Typography>
           <Box
             sx={{
               width: { xs: "345px", sm: "600px" },
-              textAlign: { xs: "center", sm: "start" },
-            }}
-          >
-            <Card variant="outlined" sx={{ margin: "1px", bgcolor: "#222222" }}>
-              <Skeleton
-                sx={{ height: 665, bgcolor: "#222222" }}
-                animation="wave"
-                variant="rectangular"
-              />
-            </Card>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            bgcolor: "#1a1a1a",
-            mb: 2,
-            border: "1px solid #a0aec0",
-          }}
-        >
-          <Typography sx={{ color: "white", margin: "10px" }}>
-            Most reviewed players
-          </Typography>
-          <Box
-            sx={{
-              width: { xs: "100%", sm: "600px" },
               textAlign: { xs: "center", sm: "start" },
             }}
           >

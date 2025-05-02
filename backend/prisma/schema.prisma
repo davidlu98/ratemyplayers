@@ -40,24 +40,27 @@ model Review {
   comment    String   @db.VarChar(200)
   created_at DateTime @default(now())
   user_id    String
-  anonymous  Boolean  @default(false)
   downvotes  Int      @default(0)
   upvotes    Int      @default(0)
   Report     Report[]
   player     Player   @relation(fields: [player_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   votes      Vote[]
+
+  @@unique([user_id, player_id])
 }
 
 model User {
-  id         String   @id @default(uuid())
-  username   String   @unique @db.VarChar(12)
-  password   String   @unique @db.VarChar(255)
-  created_at DateTime @default(now())
-  banned     Boolean  @default(false)
+  id         String     @id @default(uuid())
+  username   String     @unique @db.VarChar(12)
+  password   String     @unique @db.VarChar(255)
+  created_at DateTime   @default(now())
+  banned     Boolean    @default(false)
+  ip_address String
   Report     Report[]
   reviews    Review[]
   Vote       Vote[]
+  Feedback   Feedback[]
 }
 
 model Vote {
@@ -81,12 +84,19 @@ model Report {
   created_at DateTime @default(now())
   review     Review   @relation(fields: [review_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, review_id])
 }
 
 model Feedback {
   id         String   @id @default(uuid())
+  user_id    String
   feedback   String   @db.VarChar(300)
   created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id])
 }
 
 enum Region {

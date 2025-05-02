@@ -1,15 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
-import {
-  Checkbox,
-  FormControlLabel,
-  Typography,
-  Box,
-  Rating,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Typography, Box, Rating, TextField, Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 const filledStar = "/filled-star2.png";
@@ -29,7 +21,6 @@ const MAX_COMMENT_SIZE = 200;
 export default function CreateReview() {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(3);
-  const [anonymous, setAnonymous] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
@@ -48,7 +39,6 @@ export default function CreateReview() {
           player_id: playerId,
           rating,
           comment,
-          anonymous,
         },
         { headers: { authorization: token } }
       );
@@ -150,7 +140,7 @@ export default function CreateReview() {
           {comment.length}/{MAX_COMMENT_SIZE}
         </Typography>
 
-        {/* Submit Button and Anonymous Checkbox */}
+        {/* Submit Button */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Button
             type="submit"
@@ -162,23 +152,6 @@ export default function CreateReview() {
           >
             Submit Review
           </Button>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={anonymous}
-                onChange={(e) => setAnonymous(e.target.checked)}
-                sx={{
-                  color: "#ff1744",
-                  "&.Mui-checked": { color: "#ff1744" },
-                }}
-              />
-            }
-            label={
-              <Typography variant="body1" sx={{ color: "white" }}>
-                Post Anonymously
-              </Typography>
-            }
-          />
         </Box>
       </Box>
       <Box sx={{ mt: "10px" }}>

@@ -19,10 +19,16 @@ export default function Feedback() {
     event.preventDefault();
     setErrorMessage(null);
 
+    const token = window.localStorage.getItem("token");
+
     try {
-      await axios.post(`${API_URL}/feedback/`, {
-        feedback,
-      });
+      await axios.post(
+        `${API_URL}/feedback/`,
+        {
+          feedback,
+        },
+        { headers: { authorization: token } }
+      );
       navigate("/");
     } catch (error) {
       if (error.response) {

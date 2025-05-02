@@ -10,6 +10,9 @@ const path = require("path");
 
 // all routes have prefix /register
 
+// Helper function to get IP
+const getIpFromRequest = (req) => req.ip;
+
 const badWords = fs
   .readFileSync(path.join(__dirname, "badwords.txt"), "utf8")
   .split("\n")
@@ -63,6 +66,22 @@ function isCleanUsername(username, badWords) {
 
 router.post("/", async (req, res, next) => {
   try {
+    const ip = getIpFromRequest(req);
+
+    // console.log("IP detected:", getIpFromRequest(req));
+
+    const usersWithThisIp = await prisma.user.count({
+      where: {
+        ip_address: ip,
+      },
+    });
+
+    if (usersWithThisIp >= 5) {
+      return res
+        .status(429)
+        .json("Too many accounts created from this IP address.");
+    }
+
     const { username, password, confirmedPassword } = req.body;
 
     if (username.length < 4 || username.length > 12) {
@@ -122,6 +141,7 @@ router.post("/", async (req, res, next) => {
       data: {
         username,
         password: hashedPassword,
+        ip_address: ip,
       },
     });
 

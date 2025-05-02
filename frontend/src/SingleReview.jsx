@@ -52,7 +52,7 @@ export default function SingleReview({ review }) {
           </Box>
           {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}> */}
           <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            by {review.anonymous ? "anonymous" : review.user.username}
+            by {review.user.username}
           </Typography>
         </Box>
 

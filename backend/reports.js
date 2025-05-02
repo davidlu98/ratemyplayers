@@ -16,6 +16,19 @@ router.post("/", async (req, res) => {
       const reason = req.body.reason.trim();
       const regex = /^[a-zA-Z0-9,.!'" ]*$/;
 
+      const existingReport = await prisma.report.findUnique({
+        where: {
+          user_id_review_id: {
+            user_id: user.id,
+            review_id: req.body.review_id,
+          },
+        },
+      });
+
+      if (existingReport) {
+        return res.status(400).json("You've already reported this review.");
+      }
+
       if (reason === "") {
         return res.status(400).json("Reason must not be empty.");
       }

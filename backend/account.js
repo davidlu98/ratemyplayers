@@ -48,7 +48,6 @@ router.get("/reviews", async (req, res, next) => {
           rating: true,
           comment: true,
           created_at: true,
-          anonymous: true,
           player: true,
           user: {
             select: { username: true },
