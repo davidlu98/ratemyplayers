@@ -87,15 +87,16 @@ const getJobCategory = (job) => {
 };
 
 const parseText = (input) => {
-  // Regex to capture username, level, player job (with spaces), and server
-  const regex = /(\w+)\s+is\s+a\s+level\s+(\d+)\s+([a-zA-Z\s]+)\s+in\s+(.+)\.$/;
+  // Unicode-aware regex to capture username, level, job, and server
+  const regex =
+    /([\p{L}\p{N}_]+)\s+is\s+a\s+level\s+(\d+)\s+([a-zA-Z\s]+)\s+in\s+(.+)\.$/u;
   const match = input.match(regex);
 
   if (match) {
-    const username = match[1]; // First word: username
-    const level = match[2]; // Second word: level
-    const job = match[3].trim(); // Third part: job (could be multi-word)
-    const server = match[4].trim(); // Everything after 'in': server
+    const username = match[1]; // Now supports accented letters
+    const level = match[2];
+    const job = match[3].trim();
+    const server = match[4].trim();
 
     return {
       username,
@@ -137,6 +138,8 @@ const fetchMapleRanksData = async (region, name) => {
     }
 
     const { username, level, job, server } = parseText(description);
+
+    // console.log(username);
 
     if (!username || !level || !job || !server) {
       return null;
