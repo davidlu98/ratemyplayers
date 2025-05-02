@@ -236,7 +236,7 @@ router.post("/", async (req, res, next) => {
       let censoredText = censorFromMatches(comment, cleanedMatches);
       censoredText = extraCensor(censoredText, badWords);
 
-      console.log(censoredText);
+      // console.log(censoredText);
 
       await prisma.review.create({
         data: {

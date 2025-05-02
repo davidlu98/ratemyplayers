@@ -70,6 +70,13 @@ export default function Home() {
             mt: 2,
           }}
         >
+          <Box sx={{ textAlign: "center" }}>
+            <Typography sx={{ color: "red", mb: "4px" }}>
+              UPDATE: I'm currently looking into issues with names not showing
+              up.
+            </Typography>
+          </Box>
+
           <Box
             sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}
           >
