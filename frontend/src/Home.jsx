@@ -59,6 +59,9 @@ export default function Home() {
         <HomeSkeleton />
       ) : errorMessage ? (
         <Box sx={{ mt: "10px", textAlign: "center" }}>
+          <Typography sx={{ color: "red" }}>
+            UPDATE: Website will be down for a few hours
+          </Typography>
           <Typography sx={{ color: "red" }}>{errorMessage}</Typography>
         </Box>
       ) : (
