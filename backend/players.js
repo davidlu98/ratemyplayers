@@ -139,7 +139,7 @@ const fetchMapleRanksData = async (region, name) => {
 
     const { username, level, job, server } = parseText(description);
 
-    // console.log(username);
+    console.log(username);
 
     if (!username || !level || !job || !server) {
       return null;
