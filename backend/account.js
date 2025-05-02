@@ -9,23 +9,30 @@ const prisma = new PrismaClient();
 router.get("/", async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const user = jwt.decode(token, "LUNA");
 
-    if (user) {
-      const dbUser = await prisma.user.findUnique({
-        where: {
-          username: user.username,
-        },
-      });
+    if (!token) return res.sendStatus(401);
 
-      if (dbUser.banned) {
-        return res.status(403).json("This account has been banned.");
-      }
-
-      return res.send(dbUser);
-    } else {
-      return res.sendStatus(401);
+    let user;
+    try {
+      user = jwt.verify(token, "LUNA");
+    } catch (error) {
+      return res.status(401).json("Invalid or expired token");
     }
+
+    const dbUser = await prisma.user.findUnique({
+      where: {
+        username: user.username,
+      },
+    });
+
+    if (!dbUser) {
+      return res.status(404).json("User not found");
+    }
+
+    if (dbUser.banned) {
+      return res.status(403).json("This account has been banned.");
+    }
+    return res.send(dbUser);
   } catch (error) {
     next(error);
   }

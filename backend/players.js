@@ -139,8 +139,6 @@ const fetchMapleRanksData = async (region, name) => {
 
     const { username, level, job, server } = parseText(description);
 
-    // console.log(username);
-
     if (!username || !level || !job || !server) {
       return null;
     }
@@ -162,58 +160,6 @@ const fetchMapleRanksData = async (region, name) => {
     return null;
   }
 };
-
-router.get("/recent", async (req, res, next) => {
-  try {
-    const twentyFourHoursAgo = new Date();
-    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-    const recentReviews = await prisma.review.findMany({
-      where: {
-        created_at: { gte: twentyFourHoursAgo },
-      },
-      distinct: ["player_id"],
-      include: {
-        player: true,
-      },
-      orderBy: {
-        created_at: "desc",
-      },
-      take: 10,
-    });
-
-    const recentPlayers = recentReviews.map((review) => review.player);
-    res.send(recentPlayers);
-  } catch (error) {
-    return res.status(500).json("Something went wrong. Please try again.");
-  }
-});
-
-router.get("/most-reviewed", async (req, res) => {
-  try {
-    const mostReviewedPlayers = await prisma.player.findMany({
-      select: {
-        current_name: true,
-        server: true,
-        region: true,
-        level: true,
-        job: true,
-        _count: {
-          select: { reviews: true },
-        },
-      },
-      orderBy: {
-        reviews: {
-          _count: "desc",
-        },
-      },
-      take: 10,
-    });
-    return res.send(mostReviewedPlayers);
-  } catch (error) {
-    return res.status(500).json("Something went wrong. Please try again.");
-  }
-});
 
 router.get("/hot", async (req, res) => {
   try {
