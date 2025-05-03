@@ -211,55 +211,66 @@ router.get("/:player_id", async (req, res) => {
 router.post("/", async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const user = jwt.decode(token, "LUNA");
+    const decoded = jwt.decode(token, "LUNA");
 
-    if (user) {
-      const comment = req.body.comment.trim();
-      const regex = /^[a-zA-Z0-9,.!'" ]*$/;
-
-      const existingReview = await prisma.review.findUnique({
-        where: {
-          user_id_player_id: {
-            user_id: user.id,
-            player_id: req.body.player_id,
-          },
-        },
-      });
-
-      if (existingReview) {
-        return res
-          .status(400)
-          .json("You've already made a review for this player.");
-      }
-
-      if (comment === "") {
-        return res.status(400).json("Review must not be empty.");
-      }
-
-      if (comment.length > MAX_COMMENT_SIZE || !regex.test(comment)) {
-        return res.status(400).json("Invalid review content.");
-      }
-
-      const matches = matcher.getAllMatches(comment);
-      const cleanedMatches = mergeMatches(matches);
-      let censoredText = censorFromMatches(comment, cleanedMatches);
-      censoredText = extraCensor(censoredText, badWords);
-
-      // console.log(censoredText);
-
-      await prisma.review.create({
-        data: {
-          user_id: user.id,
-          player_id: req.body.player_id,
-          rating: Number(req.body.rating),
-          comment: censoredText,
-        },
-      });
-
-      return res.sendStatus(200);
-    } else {
+    if (!decoded) {
       return res.status(401).json("Must be logged in to submit a review.");
     }
+
+    // Fetch the user from the DB to get up-to-date banned status
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+
+    if (!user) {
+      return res.status(404).json("User not found.");
+    }
+
+    if (user.banned) {
+      return res.status(403).json("You are banned and cannot submit reviews.");
+    }
+
+    const comment = req.body.comment.trim();
+    const regex = /^[a-zA-Z0-9,.!'" ]*$/;
+
+    const existingReview = await prisma.review.findUnique({
+      where: {
+        user_id_player_id: {
+          user_id: user.id,
+          player_id: req.body.player_id,
+        },
+      },
+    });
+
+    if (existingReview) {
+      return res
+        .status(400)
+        .json("You've already made a review for this player.");
+    }
+
+    if (comment === "") {
+      return res.status(400).json("Review must not be empty.");
+    }
+
+    if (comment.length > MAX_COMMENT_SIZE || !regex.test(comment)) {
+      return res.status(400).json("Invalid review content.");
+    }
+
+    const matches = matcher.getAllMatches(comment);
+    const cleanedMatches = mergeMatches(matches);
+    let censoredText = censorFromMatches(comment, cleanedMatches);
+    censoredText = extraCensor(censoredText, badWords);
+
+    await prisma.review.create({
+      data: {
+        user_id: user.id,
+        player_id: req.body.player_id,
+        rating: Number(req.body.rating),
+        comment: censoredText,
+      },
+    });
+
+    return res.sendStatus(200);
   } catch (error) {
     return res.status(500).json("Something went wrong. Please try again.");
   }

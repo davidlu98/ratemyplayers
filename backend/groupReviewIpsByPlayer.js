@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 // 🔧 Replace this with the player ID you want to investigate
-const playerId = "2d639199-c7d7-4863-9a35-c741d4a71b25";
+const playerId = "980bd616-8377-44e6-b3de-30eaaeded332";
 
 async function main() {
   const reviews = await prisma.review.findMany({

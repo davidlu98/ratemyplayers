@@ -4,7 +4,8 @@ const prisma = new PrismaClient();
 
 // IPs to ban (add as needed)
 const ipAddressesToBan = [
-  "123.456.789.10",
+  "110.150.25.15",
+
   // ...
 ];
 
