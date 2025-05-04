@@ -93,9 +93,9 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <Typography sx={{ color: "red" }}>
+            {/* <Typography sx={{ color: "red" }}>
               UPDATE: Website will be down for a few hours after 3PM EST.
-            </Typography>
+            </Typography> */}
             <HotPlayers hotPlayers={hotPlayers} />
             <RangeMenu range={range} onRangeChange={handleRangeChange} />
             <Pagination

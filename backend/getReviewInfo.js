@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 // 🔧 Replace this with the review ID you want to look up
-const reviewId = "6a97b170-0993-4aa1-9451-6c615605b059";
+const reviewId = "f97d1ad8-c3c5-436f-8c36-991972bef399";
 
 async function main() {
   const review = await prisma.review.findUnique({
