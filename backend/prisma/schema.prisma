@@ -51,16 +51,17 @@ model Review {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  username   String     @unique @db.VarChar(12)
-  password   String     @unique @db.VarChar(255)
-  created_at DateTime   @default(now())
-  banned     Boolean    @default(false)
-  ip_address String
-  Report     Report[]
-  reviews    Review[]
-  Vote       Vote[]
-  Feedback   Feedback[]
+  id            String     @id @default(uuid())
+  username      String     @unique @db.VarChar(12)
+  password      String     @unique @db.VarChar(255)
+  created_at    DateTime   @default(now())
+  banned        Boolean    @default(false)
+  shadow_banned Boolean    @default(false)
+  ip_address    String
+  Report        Report[]
+  reviews       Review[]
+  Vote          Vote[]
+  Feedback      Feedback[]
 }
 
 model Vote {

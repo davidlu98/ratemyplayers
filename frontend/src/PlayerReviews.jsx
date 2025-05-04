@@ -34,6 +34,8 @@ export default function PlayerReviews({ user, region, playerName, playerId }) {
   };
 
   const fetchPlayerReviews = async () => {
+    const token = window.localStorage.getItem("token");
+
     try {
       const { data } = await axios.get(
         `${API_URL}/reviews/${playerId}?page=${page}`,
@@ -41,6 +43,9 @@ export default function PlayerReviews({ user, region, playerName, playerId }) {
           params: {
             sortBy: sortOptions.sortBy,
             rating: sortOptions.rating,
+          },
+          headers: {
+            authorization: token,
           },
         }
       );

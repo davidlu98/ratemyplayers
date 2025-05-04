@@ -36,6 +36,8 @@ export default function Home() {
   };
 
   const fetchPlayerData = async () => {
+    const token = window.localStorage.getItem("token");
+
     try {
       setLoading(true);
 
@@ -43,6 +45,7 @@ export default function Home() {
         `${API_URL}/players/hot?range=${range}&page=${page}`,
         {
           params: { range, page },
+          headers: { authorization: token },
         }
       );
 

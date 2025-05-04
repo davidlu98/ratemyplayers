@@ -140,11 +140,32 @@ router.get("/:reviewId/votes", async (req, res, next) => {
 router.get("/:player_id/all", async (req, res) => {
   const { player_id } = req.params;
 
+  let requesterId = null;
+
   try {
+    // Extract requester ID from token
+    const token = req.headers.authorization;
+    if (token) {
+      const decoded = jwt.verify(token, "LUNA");
+      requesterId = decoded?.id || null;
+    }
+  } catch {
+    requesterId = null;
+  }
+
+  try {
+    const whereFilter = requesterId
+      ? {
+          player_id,
+          OR: [{ user: { shadow_banned: false } }, { user_id: requesterId }],
+        }
+      : {
+          player_id,
+          user: { shadow_banned: false },
+        };
+
     const reviews = await prisma.review.findMany({
-      where: {
-        player_id,
-      },
+      where: whereFilter,
       select: {
         rating: true,
       },
@@ -152,7 +173,8 @@ router.get("/:player_id/all", async (req, res) => {
 
     res.send(reviews);
   } catch (error) {
-    res.send(error);
+    console.error("Error in /:player_id/all route:", error);
+    res.status(500).send("Something went wrong.");
   }
 });
 
@@ -163,27 +185,57 @@ router.get("/:player_id", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = 10;
 
-  let orderBy = { created_at: "desc" }; // By default, Newest first
+  let orderBy = { created_at: "desc" };
   if (sortBy === "oldest") orderBy = { created_at: "asc" };
   if (sortBy === "most_upvotes")
     orderBy = [{ upvotes: "desc" }, { created_at: "desc" }];
   if (sortBy === "most_downvotes")
     orderBy = [{ downvotes: "desc" }, { created_at: "desc" }];
 
-  let where = { player_id };
+  let baseWhere = { player_id };
   if (rating !== "all") {
-    where = { player_id, rating: parseInt(rating) };
+    baseWhere.rating = parseInt(rating);
   }
+
+  // Check if request is from a logged-in user
+  let requesterId = null;
+  try {
+    const token = req.headers.authorization;
+    if (token) {
+      const decoded = jwt.decode(token, "LUNA");
+      if (decoded && decoded.id) {
+        requesterId = decoded.id;
+      }
+    }
+  } catch (_) {
+    // silently ignore invalid tokens
+  }
+
+  // Define shared filtering logic for reviews
+  const userFilter = requesterId
+    ? {
+        OR: [
+          { user: { shadow_banned: false } },
+          { user_id: requesterId }, // include own reviews even if shadow banned
+        ],
+      }
+    : { user: { shadow_banned: false } };
 
   try {
     const totalReviews = await prisma.review.count({
-      where,
+      where: {
+        ...baseWhere,
+        ...userFilter,
+      },
     });
 
     const reviews = await prisma.review.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
-      where,
+      where: {
+        ...baseWhere,
+        ...userFilter,
+      },
       select: {
         id: true,
         player_id: true,
@@ -204,7 +256,7 @@ router.get("/:player_id", async (req, res) => {
       totalReviews,
     });
   } catch (error) {
-    res.send(error);
+    res.status(500).json("Failed to fetch reviews.");
   }
 });
 
@@ -260,6 +312,15 @@ router.post("/", async (req, res, next) => {
     const cleanedMatches = mergeMatches(matches);
     let censoredText = censorFromMatches(comment, cleanedMatches);
     censoredText = extraCensor(censoredText, badWords);
+
+    const isToxic = censoredText.includes("*");
+
+    if (isToxic && !user.shadow_banned) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { shadow_banned: true },
+      });
+    }
 
     await prisma.review.create({
       data: {

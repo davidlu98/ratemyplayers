@@ -6,7 +6,7 @@ app.set("trust proxy", true);
 
 // Allow multiple origins
 const allowedOrigins = [
-  // "http://localhost:5173", // Local frontend
+  "http://localhost:5173", // Local frontend
   "https://maplereviews.onrender.com", // Deployed frontend
 ];
 

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-
+const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -93,8 +93,6 @@ router.get("/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = 10;
 
-    // console.log(range, page);
-
     const intervalMap = {
       "1h": 1 * 60 * 60 * 1000,
       "1d": 24 * 60 * 60 * 1000,
@@ -105,32 +103,49 @@ router.get("/hot", async (req, res) => {
     const selectedRange = intervalMap[range] || intervalMap["1d"];
     const since = new Date(Date.now() - selectedRange);
 
-    // Get total count of distinct player IDs in the review range
+    // Decode JWT token to get requester user ID
+    let requesterId = null;
+    try {
+      const token = req.headers.authorization;
+      if (token) {
+        const decoded = jwt.verify(token, "LUNA");
+        requesterId = decoded?.id || null;
+      }
+    } catch {
+      requesterId = null;
+    }
+
+    const shadowBanFilter = requesterId
+      ? {
+          OR: [{ user: { shadow_banned: false } }, { user_id: requesterId }],
+        }
+      : {
+          user: { shadow_banned: false },
+        };
+
+    const baseWhere = {
+      created_at: {
+        gte: since,
+      },
+      ...shadowBanFilter,
+    };
+
     const totalPlayersResult = await prisma.review.groupBy({
       by: ["player_id"],
-      where: {
-        created_at: {
-          gte: since,
-        },
-      },
+      where: baseWhere,
     });
 
     const totalPlayers = totalPlayersResult.length;
     const totalPages = Math.ceil(totalPlayers / pageSize);
 
-    // Get paginated player_ids sorted by review count
     const reviewGroups = await prisma.review.groupBy({
       by: ["player_id"],
-      where: {
-        created_at: {
-          gte: since,
-        },
-      },
+      where: baseWhere,
       _count: {
         player_id: true,
       },
       _min: {
-        created_at: true, // earliest review time for tie-breaker
+        created_at: true,
       },
       orderBy: [
         {
@@ -147,6 +162,7 @@ router.get("/hot", async (req, res) => {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+
     const playerIds = reviewGroups.map((group) => group.player_id);
 
     const players = await prisma.player.findMany({
@@ -163,7 +179,6 @@ router.get("/hot", async (req, res) => {
       },
     });
 
-    // Maintain correct order (based on reviewGroups)
     const leaderboard = reviewGroups.map((group) => {
       const player = players.find((p) => p.id === group.player_id);
       return {

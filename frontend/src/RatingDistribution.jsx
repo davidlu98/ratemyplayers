@@ -33,8 +33,12 @@ const RatingDistribution = ({ playerId }) => {
   const [maxCount, setMaxCount] = useState(0);
 
   const fetchPlayerReviews = async () => {
+    const token = window.localStorage.getItem("token");
+
     try {
-      const { data } = await axios.get(`${API_URL}/reviews/${playerId}/all`);
+      const { data } = await axios.get(`${API_URL}/reviews/${playerId}/all`, {
+        headers: { authorization: token },
+      });
 
       const newCounts = {
         1: 0,
