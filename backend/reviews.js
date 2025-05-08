@@ -260,7 +260,18 @@ router.get("/:player_id", async (req, res) => {
   }
 });
 
+const notAllowedPlayerIds = [
+  "4c5b8f30-6604-456c-8032-c5d1751a19b4", // Comet
+  "98adeaaf-8e6d-44bc-948d-71a670ffa96c", // Aelika
+];
+
 router.post("/", async (req, res, next) => {
+  const { player_id } = req.body;
+
+  if (notAllowedPlayerIds.includes(player_id)) {
+    return res.status(403).json("Reviews are disabled for this account.");
+  }
+
   try {
     const token = req.headers.authorization;
     const decoded = jwt.decode(token, "LUNA");

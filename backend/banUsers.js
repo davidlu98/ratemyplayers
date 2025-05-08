@@ -7,10 +7,10 @@ const prisma = new PrismaClient();
 
 // Example: replace with your target user IDs
 const userIdsToBan = [
-  "9c97d43e-4b87-44d3-9ee4-7c51af1e39ce",
-  // "2a66c730-0162-4b87-87d5-e1425d7ca437",
-  // "342abe64-9c85-4745-9a76-21423763b3f8",
-  // "f38a5d8b-6886-4871-97e3-540bf4749b03",
+  "2ea6b2cf-644e-41fb-851b-f1b8c4316a49",
+  "554f03d8-ab19-4ef3-b92a-a23034e631bd",
+  "460343ab-1793-44d3-b07b-47e3ef776b66",
+  "63e296cc-b157-4df4-b881-17e6cf28c700",
   // Add more as needed
 ];
 

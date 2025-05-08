@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 // 🔧 Replace this with your list of review IDs
-const reviewIds = ["91f3f939-e5ba-4cec-9ae0-3e3ef06da026"];
+const reviewIds = ["401f74d2-f5ed-427b-a1eb-bff50f7db3e6"];
 
 async function main() {
   for (const id of reviewIds) {
