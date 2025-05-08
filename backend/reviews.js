@@ -263,6 +263,9 @@ router.get("/:player_id", async (req, res) => {
 const notAllowedPlayerIds = [
   "4c5b8f30-6604-456c-8032-c5d1751a19b4", // Comet
   "98adeaaf-8e6d-44bc-948d-71a670ffa96c", // Aelika
+  "6e4361bf-4716-43f0-9404-0c4407f10071", // Emallies
+  "449cac55-5322-479d-8def-2a1daf61982d", // IceMuscle
+  "2d639199-c7d7-4863-9a35-c741d4a71b25", // AxeChris
 ];
 
 router.post("/", async (req, res, next) => {
