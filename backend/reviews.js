@@ -266,6 +266,8 @@ const notAllowedPlayerIds = [
   "6e4361bf-4716-43f0-9404-0c4407f10071", // Emallies
   "449cac55-5322-479d-8def-2a1daf61982d", // IceMuscle
   "2d639199-c7d7-4863-9a35-c741d4a71b25", // AxeChris
+  "93535d39-69f8-48e6-92ea-5621fc36433a", // Babe
+  "b7bbfe8a-c71e-4a7d-8229-3edc491e8e46", // Aety
 ];
 
 router.post("/", async (req, res, next) => {
