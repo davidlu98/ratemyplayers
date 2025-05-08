@@ -272,6 +272,9 @@ const notAllowedPlayerIds = [
   "10c01991-1a71-41de-bad3-68f2c5ea0b98", // scatter
   "c62bbb4a-9402-4908-a1bb-7d1f406c22f0", // CooleyBucc
   "62c4a02d-dac4-469b-b67e-1a2e040b9e97", // Madrid
+  "bedcf31b-2ec4-4d56-8e5c-c2946ba53ab9", // Roar
+  "a195e27c-d912-496b-b2c7-b40401fab4c1", // Three
+  "30b05483-3276-4c0c-8cdd-3fb1579cebe0", // janeies
 ];
 
 router.post("/", async (req, res, next) => {

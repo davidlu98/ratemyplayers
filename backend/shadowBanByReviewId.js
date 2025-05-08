@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 // Replace this with the review ID you want to target
-const REVIEW_ID = "2512f1ac-8f17-4ab3-acff-cd66a585648c";
+const REVIEW_ID = "6269c51e-6278-42f0-82eb-c90f8a11965e";
 
 (async () => {
   try {
