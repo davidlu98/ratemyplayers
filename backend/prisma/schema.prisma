@@ -53,7 +53,7 @@ model Review {
 model User {
   id            String     @id @default(uuid())
   username      String     @unique @db.VarChar(12)
-  password      String     @unique @db.VarChar(255)
+  password      String     @db.VarChar(255)
   created_at    DateTime   @default(now())
   banned        Boolean    @default(false)
   shadow_banned Boolean    @default(false)

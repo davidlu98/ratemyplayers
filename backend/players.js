@@ -9,6 +9,7 @@ const axios = require("axios");
 
 const jobCategorization = {
   // Explorer Archetype
+  Beginner: { archetype: "Explorer", branch: "Beginner" },
   Hero: { archetype: "Explorer", branch: "Warrior" },
   Paladin: { archetype: "Explorer", branch: "Warrior" },
   "Dark Knight": { archetype: "Explorer", branch: "Warrior" },
@@ -26,6 +27,7 @@ const jobCategorization = {
   "Dual Blade": { archetype: "Explorer", branch: "Thief" },
 
   // Cygnus Knight Archetype
+  Noblesse: { archetype: "Cygnus Knight", branch: "Noblesse" },
   Mihile: { archetype: "Cygnus Knight", branch: "Warrior" },
   "Dawn Warrior": { archetype: "Cygnus Knight", branch: "Warrior" },
   "Wind Archer": { archetype: "Cygnus Knight", branch: "Archer" },
@@ -34,6 +36,7 @@ const jobCategorization = {
   "Thunder Breaker": { archetype: "Cygnus Knight", branch: "Pirate" },
 
   // Resistance Archetype
+  Citizen: { archetype: "Resistance", branch: "Citizen" },
   Blaster: { archetype: "Resistance", branch: "Warrior" },
   "Demon Slayer": { archetype: "Resistance", branch: "Warrior" },
   "Demon Avenger": { archetype: "Resistance", branch: "Warrior" },
@@ -76,8 +79,12 @@ const jobCategorization = {
   // Zero Archetype
   Zero: { archetype: "Zero", branch: "Warrior" },
 
-  // Lynn Archetype
-  Lynn: { archetype: "Lynn", branch: "Mage" },
+  // Jianghu Archetype
+  Lynn: { archetype: "Jianghu", branch: "Mage" },
+  "Mo Xuan": { archetype: "Jianghu", branch: "Pirate" },
+
+  // Shine Archetype
+  Sia: { archetype: "Shine", branch: "Mage" },
 };
 
 const getJobCategory = (job) => {
@@ -215,8 +222,8 @@ router.get("/:region/:name", async (req, res, next) => {
     } else {
       const link =
         region === "NA"
-          ? `https://www.nexon.com/api/maplestory/no-auth/v1/ranking/na?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`
-          : `https://www.nexon.com/api/maplestory/no-auth/v1/ranking/eu?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`;
+          ? `https://www.nexon.com/api/maplestory/no-auth/ranking/v2/na?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`
+          : `https://www.nexon.com/api/maplestory/no-auth/ranking/v2/eu?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`;
 
       const { data } = await axios.get(link);
       // console.log(data);
@@ -229,79 +236,125 @@ router.get("/:region/:name", async (req, res, next) => {
       const characterName = character.characterName;
       const level = character.level;
       const characterImgURL = character.characterImgURL;
-      let server = character.worldName;
-      let jobName = character.jobName;
       const jobDetail = character.jobDetail;
 
-      if (server === "Kronos") {
-        server = "Reboot Kronos";
-      }
+      let worldID = character.worldID;
+      let jobID = character.jobID;
 
-      if (server === "Hyperion") {
-        server = "Reboot Hyperion";
-      }
+      let jobName = "";
+      let server = "";
 
-      if (jobName === "Warrior") {
-        if (jobDetail === 12) {
-          jobName = "Hero";
-        }
-        if (jobDetail === 22) {
-          jobName = "Paladin";
-        }
-        if (jobDetail === 32) {
-          jobName = "Dark Knight";
-        }
-      }
+      const serverMap = {
+        1: "Bera",
+        19: "Scania",
+        30: "Luna",
+        45: "Reboot Kronos",
+        46: "Reboot Solis",
+        70: "Reboot Hyperion",
+      };
 
-      if (jobName === "Magician") {
-        if (jobDetail === 12) {
-          jobName = "Fire Poison Archmage";
-        }
-        if (jobDetail === 22) {
-          jobName = "Ice Lightning Archmage";
-        }
-        if (jobDetail === 32) {
-          jobName = "Bishop";
-        }
-      }
+      server = serverMap[worldID] || "Unknown";
 
-      if (jobName === "Thief") {
-        if (jobDetail === 12) {
-          jobName = "Night Lord";
-        }
-        if (jobDetail === 22) {
-          jobName = "Shadower";
-        }
-      }
+      const jobMap = {
+        // Explorers
+        0: {
+          0: "Beginner",
+        },
+        1: {
+          12: "Hero",
+          22: "Paladin",
+          32: "Dark Knight",
+        },
+        2: {
+          12: "Fire Poison Archmage",
+          22: "Ice Lightning Archmage",
+          32: "Bishop",
+        },
+        3: {
+          12: "Bowmaster",
+          22: "Marksman",
+          32: "Pathfinder",
+        },
+        4: {
+          12: "Night Lord",
+          22: "Shadower",
+          32: "Dual Blade",
+        },
+        5: {
+          12: "Buccaneer",
+          22: "Corsair",
+          32: "Cannon Master",
+        },
+        // Cygnus Knights
+        10: "Noblesse",
+        11: "Dawn Warrior",
+        12: "Blaze Wizard",
+        13: "Wind Archer",
+        14: "Night Walker",
+        15: "Thunder Breaker",
+        202: "Mihile",
+        // Resistance
+        30: "Citizen",
+        31: "Demon Slayer",
+        32: "Battle Mage",
+        33: "Wild Hunter",
+        35: "Mechanic",
+        208: "Xenon",
+        209: "Demon Avenger",
+        215: "Blaster",
+        // Nova
+        204: "Kaiser",
+        205: "Angelic Buster",
+        216: "Cadena",
+        222: "Kain",
+        // Anima
+        220: "Hoyoung",
+        223: "Lara",
+        // Jianghu
+        225: "Lynn",
+        226: "Mo Xuan",
+        // Shine
+        227: "Sia",
+        // Other
+        210: "Zero",
+        214: "Kinesis",
+        // Heroes of Maple
+        21: "Aran",
+        22: "Evan",
+        23: "Mercedes",
+        24: "Phantom",
+        212: "Shade",
+        203: "Luminous",
+        // Sengoku
+        206: "Hayato",
+        207: "Kanna",
+        // Flora
+        217: "Illium",
+        218: "Ark",
+        221: "Adele",
+        224: "Khali",
+      };
 
-      if (jobName === "Bowman") {
-        if (jobDetail === 12) {
-          jobName = "Bowmaster";
+      if (jobMap[jobID]) {
+        if (typeof jobMap[jobID] === "object" && jobID === 3) {
+          jobName = jobMap[jobID][jobDetail] || "Pathfinder";
+        } else if (typeof jobMap[jobID] === "object" && jobID === 4) {
+          jobName = jobMap[jobID][jobDetail] || "Dual Blade";
+        } else if (typeof jobMap[jobID] === "object" && jobID === 5) {
+          jobName = jobMap[jobID][jobDetail] || "Cannon Master";
+        } else {
+          jobName = jobMap[jobID];
         }
-        if (jobDetail === 22) {
-          jobName = "Marksman";
-        }
-      }
-
-      if (jobName === "Pirate") {
-        if (jobDetail === 12) {
-          jobName = "Buccaneer";
-        }
-        if (jobDetail === 22) {
-          jobName = "Corsair";
-        }
-        if (jobDetail === 32) {
-          jobName = "Cannon Master";
-        }
+      } else {
+        jobName = "Unknown Job";
       }
 
       const jobInformation = getJobCategory(jobName);
-      // console.log(jobName);
-      // console.log(jobInformation);
-      // console.log(characterName);
-      // console.log(level);
-      // console.log(characterImgURL);
-      // console.log(worldName);
+      console.log(
+        `${characterName} is a Level ${level} ${jobName} from ${server}`
+      );
+      console.log(characterImgURL);
+      console.log(jobInformation);
 
       // Create the player
       const newPlayer = await prisma.player.create({
@@ -318,7 +371,9 @@ router.get("/:region/:name", async (req, res, next) => {
         },
       });
 
+      console.log(newPlayer.id);
       return res.send(newPlayer);
+      // return res.sendStatus(200);
     }
   } catch (error) {
     return res.status(500).json("Something went wrong. Please try again.");
