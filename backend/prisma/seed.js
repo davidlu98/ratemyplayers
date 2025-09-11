@@ -5,6 +5,249 @@ const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
+const playerData = {
+  0: {
+    current_name: "Bane",
+    current_name_lower: "bane",
+    region: "NA",
+    server: "Bera",
+    level: 295,
+    archetype: "Resistance",
+    branch: "Warrior",
+    job: "Demon Slayer",
+    avatar:
+      "https://msavatar1.nexon.net/Character/CECMCMDMAKIMDJOODICACKJFLKOLBLPFMCNCFBEMGLAAPKIFONADFMCCBMBKONNBHNIPFOMBMBOMILPOEHPMJLLMFODLLIJPLCCDJJHMNONIONFGGMDEMECNAMEMDGNBBFKGPOGABECBBOCDKJOKGFNDAKKOGNPILCJPJAKBPCBHPHKDCHMAGPJIBBDCHHMCLNEGANMFGCKHLOHAAPKELHGDANAJBKKLFEKDEAECECMBNLOMFGJCANCHANEFLDNK.png",
+  },
+  1: {
+    current_name: "Aizen",
+    current_name_lower: "aizen",
+    region: "NA",
+    server: "Reboot Hyperion",
+    level: 290,
+    archetype: "Sengoku",
+    branch: "Warrior",
+    job: "Hayato",
+    avatar:
+      "https://msavatar1.nexon.net/Character/DGNKNJKIJLOHDCGJEOIDJBANPMEIDGLHPLFBPPEKEMPCEGNCAABAPDMJMOMIJAAMAEMJMABAKOKMHBINDAMHIGDLDEEADJEMKJIFGPHJPEDPKLGANOCLNBCBLMHDKFJODEFINLOFIECAKKNNPDBFCOKAFJMLMGCJONEBALOEFJICAFKIHOEIIOPJCFDGDMMOPGBBIEGOCDDCCIDKCMIJOGGIDPDBHNGPKONANKLFGCEDOHOBPPPPMBHNICLBFACN.png",
+  },
+  2: {
+    current_name: "Alaska",
+    current_name_lower: "alaska",
+    region: "NA",
+    server: "Bera",
+    level: 291,
+    archetype: "Hero",
+    branch: "Warrior",
+    job: "Aran",
+    avatar:
+      "https://msavatar1.nexon.net/Character/CKMAAABBGFPJAEOPEEHBOPIHNGAHIFHHPFPKKIPKABPGKOEIAELJMBOMOKHKCPGGKBMOHGMPEMHPKLLPHGKNIFKLACNAGKMENJAJIMHJODPOJPJOKLFKDELDACGGGGFFKBCFLIPPLMOIALAFOLDMLHDEMELAEIFHELCIEKBAHGAGGAOGNKAJPOFLNAGBPMFBALEEGIBKEHLMNILMHJAFONHILLFOPJMOGDEEGFNOBKOPJBJABMMEAHDHBNKFKNEM.png",
+  },
+  3: {
+    current_name: "Alucardll",
+    current_name_lower: "alucardll",
+    region: "NA",
+    server: "Scania",
+    level: 295,
+    archetype: "Explorer",
+    branch: "Mage",
+    job: "Fire Poison Archmage",
+    avatar:
+      "https://msavatar1.nexon.net/Character/OOBHOKHKPCALLDMABDHCAOCFLEIKGFBBOCAIDBFOGJJGAGFJBKNKKJCOECLKADDDMAGFOAFCDBMPHCLJGPDOLJNICNOKPPNOECOEIJNGAMNEJKFNEDLDHCDGEGDAOMFNFLJLOFNFBEJAIOJPNLDHLKKEONOEMJJACKDOMHNCNNLKGFEPDIOGCNNPIBLPOKFOIOAGAKKJBGFLNJLCHPDEDDIELEJJKMDCGAJBCNJHKKPJCGMLLAHJMCKPACFIBHFF.png",
+  },
+  4: {
+    current_name: "BugTamer",
+    current_name_lower: "bugtamer",
+    region: "EU",
+    server: "Reboot Solis",
+    level: 291,
+    archetype: "Jianghu",
+    branch: "Mage",
+    job: "Lynn",
+    avatar:
+      "https://msavatar1.nexon.net/Character/OHAPJKEKCGBHNBCMALKNKNDJOMHEOIMJOIJNNIIKMDMILGOKNCCCIBMDGKMFJNPEMBGDPBHHLIBDJIMEPPCPGLKPBAGHLIPFLMJJHDBCDGPJGOLLOHPNMEBGBOBOJPBONIELLEAKAIGNJDDOBNEALHAGEGLILHADFKIJFNKOJIMENHEEOEFFCDDEHMJODIDKFGMOPINLJCAMKHOOKGHEPJFNKGGEKCJHJBOHHEIPGNNAHHMKFDABPOGBAEDLGLFN.png",
+  },
+  5: {
+    current_name: "Carol",
+    current_name_lower: "carol",
+    region: "NA",
+    server: "Bera",
+    level: 286,
+    archetype: "Herp",
+    branch: "Pirate",
+    job: "Shade",
+    avatar:
+      "https://msavatar1.nexon.net/Character/JBEBLDMNCPOMIAFMDAKLMOIKHENILNLBLADNKGKDEEAMPLEMPFHCJNPEOEHHKALJCFGCHDPDCEANLIHBIHHDEKNIILKDLLMOBPHDLLFKECCEIGHODELHOMMNHCPEDHEKBIGHPAHNKPGFHCFFKNGLEEKJKNIJPGNHGLIILAAJNAGLELKNEBHMOFEJCJGFFGFMHFIDCCJIHBECLJMINLMEPFHADFHGJLODCLMFHJIANCKBAIDEJKNEEPCNLDLNDBKD.png",
+  },
+  6: {
+    current_name: "Dark",
+    current_name_lower: "dark",
+    region: "NA",
+    server: "Reboot Kronos",
+    level: 296,
+    archetype: "Explorer",
+    branch: "Warrior",
+    job: "Hero",
+    avatar:
+      "https://msavatar1.nexon.net/Character/PECBPKBJIOALNFJCNPCCAEDBENBOKPMBPJBLKDENFJNFKCNLGAPCILPHJDENEJJMKKLLICJGGFAOLCPCIDBGKCMIKGPFEBCNGIEBLFHJJCCAMLKDONCJNNEBIPCFPFGBOOKHEHFIGGDHHICEDCKOBPDOEPJELGNMBDGJDELBDKDOBLDBFHHMJHCCIFFEGNIGMCKECMPCPCFPJCKODHOEMLLIMAOOPNCMONKHNLEMFLEDOEGKNDKHELJDEBPBIHMG.png",
+  },
+  7: {
+    current_name: "DonutChief",
+    current_name_lower: "donutchief",
+    region: "NA",
+    server: "Bera",
+    level: 300,
+    archetype: "Resistance",
+    branch: "Mage",
+    job: "Battle Mage",
+    avatar:
+      "https://msavatar1.nexon.net/Character/ABCJENOGOGEENPONIDKAONNHCOGFNNOPIAJHGCOMIJOLGFGLJMNOPIJODIBKJFBDMJPBIPPGDEECMFBLBFJCBCGLDIAMLAILAIEJHIICJNIBINEJDPCJPFFMAPEJINDLIKMNLLMIDBCIGGKDEGCOCIPMAJFIHFPGEMPCHAFNOHDOCBFFALJPFLOPIIHCNEMHCMHGEBMAOJAKMEDOENMCPEFDNKPBOKAPDKDKOOOMLCOLKKHHADKBAAKGIJKPKICI.png",
+  },
+  8: {
+    current_name: "Niru",
+    current_name_lower: "niru",
+    region: "NA",
+    server: "Bera",
+    level: 300,
+    archetype: "Explorer",
+    branch: "Mage",
+    job: "Bishop",
+    avatar:
+      "https://msavatar1.nexon.net/Character/DDBGPLFFKBPLEHKNOBNMHCKKNIKKLLBNKCPGKHKNPLNEPPNLHGMBBPFOKKAOHAMGALDLIBMNDJKIHHKFHFEFAIHNHOOFCEPDPAMIPLHHNIHANAPMABBHOOGIFBOKMEMDHLFCLNBMMBKPHCIJEDPMLBPLADCEGMKDAKIFMHOBKAEMOAGEFJDHOLOJACDPAOFMNCBDADJGHIDCADCGMCMKCNHMFHNLDBKKBBFLEOJBDKKPMBMDGNHGDEADOIPEGAMH.png",
+  },
+  9: {
+    current_name: "SuriClone",
+    current_name_lower: "suriclone",
+    region: "NA",
+    server: "Reboot Hyperion",
+    level: 290,
+    archetype: "Explorer",
+    branch: "Thief",
+    job: "Dual Blade",
+    avatar:
+      "https://msavatar1.nexon.net/Character/OENCDKFHLABOHILICPGBLDCFFJMNCNHFLOOPJDAEGMMPEBFEKDKDBDCAJCEAJEDBIFLPJAOJJANHDKHNEDJCJAJBHIOMEBGBBOMPGAEIBMPIJJOEAAGNDMEGEGCBGGJKLAEPPADCIOHGKAIEEJCBIPHBJIFNHOPMIDCCINJEEFCLKLNCAICCOJDLNDJDOAIGIFOBHGNKDCNFGOAIHDKIOJMGNEIMMLKPPKDCJIEFCGAAMGJGPMEPBDIHMFINCIGO.png",
+  },
+  10: {
+    current_name: "Asians",
+    current_name_lower: "asians",
+    region: "NA",
+    server: "Bera",
+    level: 292,
+    archetype: "Resistance",
+    branch: "Mage",
+    job: "Battle Mage",
+    avatar:
+      "https://msavatar1.nexon.net/Character/MPNAHELCDGCCDHGODFIJHOHAFFCHOICFJMPLPCKOAIHMMCLFLLHHGIOCCOJLIPECPAKDIBECOHLGDJPNHPLJFMDGDFBIJEDBBPGLNMPONIGOBHGOELCLEDFPBKHKNNHGJJHDMCICCFKEFBHFEBHKCPFPNCPIFBCKIONLNHJPMPLGEOHKGELDKEINMCLLFFGGGAIEEMADKBCFDCOHNKNPCOLJLJMEGOFAGOPJLOGGBDMOOBGEFNGAEKABCNNCLCED.png",
+  },
+  11: {
+    current_name: "Nerf",
+    current_name_lower: "nerf",
+    region: "EU",
+    server: "Luna",
+    level: 297,
+    archetype: "Explorer",
+    branch: "Pirate",
+    job: "Buccaneer",
+    avatar:
+      "https://msavatar1.nexon.net/Character/DMIBIOLHNHMPDDDOFENBHFNDOKKBJDDLLMGOINMOGLOIFEEAJDPPIEKJACKDKKGMGJMOHCGPHJELEAEAEHALAHOHBELGJDBIDLGMHCNJCJJMPIKECNMMEPFNDBNHIFCMEJPHMMMKIJNLGNGCDIGJKLDOGDIENDEBFEJENLOJICJBHIBBNJGGFLDHKFDJNAKHPHDDJNAIAHFLLDHGKBDNFMKKMJKNEDHBNCAMDCMKBDIOEMOICDONGMEFBHOEMJDH.png",
+  },
+  12: {
+    current_name: "Pekay",
+    current_name_lower: "pekay",
+    region: "NA",
+    server: "Bera",
+    level: 293,
+    archetype: "Hero",
+    branch: "Archer",
+    job: "Mercedes",
+    avatar:
+      "https://msavatar1.nexon.net/Character/BFECMLIGJIOCLHOOEMCLMEFJDIBKHFILOEGEFHPFINIOPJBPBJDIAMEFDDMJLLKEJMCCHGPOIBENCGLACDNGICMALHLKMDKLJBFIHPPJPBINDCCBFDACAKPHKGFLLHJPGPKPLEFHHEFOBPPBPOLMLMGIIODNAFPAKIBDGBCCKHAJDFCLHNEGCEGFNLEFNLEFJKNPNEOMEMHNNOLLBEPOLDELCDDELAAIDJENPMKPGNEHANIGGJMLHBCAGCDGHJGL.png",
+  },
+  13: {
+    current_name: "Shapaz",
+    current_name_lower: "shapaz",
+    region: "NA",
+    server: "Reboot Kronos",
+    level: 295,
+    archetype: "Cygnus",
+    branch: "Thief",
+    job: "Night Walker",
+    avatar:
+      "https://msavatar1.nexon.net/Character/JKKDIOBCKBEGOJAICLKOCAAFEGMLGDNHLIJADJNCPKFAOHMJEDFIJBKOGMJMILOGFEEDDKFGKEGDCMBDGMDGOMCAPHKKODHDKINPGIMIIGFEHDCOJDHMHAGICAIMOHKPMPALAHKGINOOBOCOLAJIGBLJEPAHLCIPLMFCKNMAKFOFCMEECFHAMKNCBHNHFOOBAEIMIEALLBGJDKOHKFFBPCPPNGMFFKBIPNANFDLIDFNOIHJHJEIOHIOFKAMGHJHI.png",
+  },
+  14: {
+    current_name: "Bowozo",
+    current_name_lower: "bowozo",
+    region: "NA",
+    server: "Reboot Kronos",
+    level: 276,
+    archetype: "Explorer",
+    branch: "Archer",
+    job: "Bowmaster",
+    avatar:
+      "https://msavatar1.nexon.net/Character/GLMGPEGMOHIHINNPGDGIMMINPELJNMCONFOAJPLCHCGANNCIEDCFBKDJBJAJLKKPAPDOJGMNKELLNPDEJHELHOOEJPFGHNJBCKILLPFOLPBDEPGGIGOJMKCLDCCDBEGDJIGDMOGMGMJIAKJCCCCGNICLJCHNEOFODGBMGJCNJIDPBANDPOHKIOPMIIPNBNBJJJALNDFJNLILLLBMIGGANBEAPHICPENKKDJEDIEMFKLNPEJDHNCCIAHEGCOGHGIO.png",
+  },
+  15: {
+    current_name: "MitShot",
+    current_name_lower: "mitshot",
+    region: "NA",
+    server: "Bera",
+    level: 294,
+    archetype: "Explorer",
+    branch: "Archer",
+    job: "Bowmaster",
+    avatar:
+      "https://msavatar1.nexon.net/Character/IPNNFMAHHMGNLOMBJLMOAKJAOHPNMDHFDDOBFANBLPMGPALKHBFFEBHJNGBAFEMJFJICJOJHJIBPCILFEOKMNCHOFDBOEPLKLFHKLFKDFIMLCMBOEDDDGJNENHICAADKLELLBLFLPLEBABHLGNBANKEPHHLCBLNGBMBKMFDFLDBDDGPLCFDPCCMCGHHBLJBBIGLLPKJHPFGLDFPFJOAEEDLJJNLJFCMKLHHIAOIAFMOBJFIALPJEFPHACDJFNABD.png",
+  },
+  16: {
+    current_name: "Zerk",
+    current_name_lower: "zerk",
+    region: "NA",
+    server: "Bera",
+    level: 295,
+    archetype: "Explorer",
+    branch: "Warrior",
+    job: "Hero",
+    avatar:
+      "https://msavatar1.nexon.net/Character/ENOCNHDLNMGGGDLGLOPLDJPODDFNOLFIJOONLECEHJKEJPNBDPGFBNJFIGCNDJNKKCOKOGPDNEMAMLMLEILFIJGKEJIPJJJCMMOBKELOEOFIPFHNFHNEIEGBFODNKBMLACILGBCOHAABGHPLJBOMKCNLNBGGBHEDBLEDGCFDOGNIFIPPMAFHDMCJMAMJMHFLGILDGJKFAFBGJHMANIPKGBBFMMMJAEHLEIAPPMMBPFPPJLNFCECFLLMAGGPCFHDG.png",
+  },
+  17: {
+    current_name: "Jake",
+    current_name_lower: "jake",
+    region: "NA",
+    server: "Scania",
+    level: 120,
+    archetype: "Cygnus",
+    branch: "Pirate",
+    job: "Thunder Breaker",
+    avatar:
+      "https://msavatar1.nexon.net/Character/BJBFNEMGOHNFEKIMOFBBBOODEMBKDEAJAFPACFOFAJBBFBLHCMDGFLHBBMBJHMEHLJDODOHBFKJKHDMJJMGJBLFNGEAAFMCEGDNKNBPJCGKOLKIGEBOKGMNBBOPKDPKFJGAGPLFHBGAFKJCEBCONIDDFBEDBPDCOPFOENHEOPICCPJHKGBMAPFGLPMJPOBJOOPCDJBLIJFHKNFMAEPGFCLLCOINFPIGOAKGHCOMHBNBFHEKAPLBIJFOFEGNLDNPN.png",
+  },
+  18: {
+    current_name: "Gamer",
+    current_name_lower: "gamer",
+    region: "NA",
+    server: "Bera",
+    level: 290,
+    archetype: "Explorer",
+    branch: "Thief",
+    job: "Night Lord",
+    avatar:
+      "https://msavatar1.nexon.net/Character/NJHNCGIDCCAAKGHHDCBLIJEBBDOPLAEPGOAODFPPEKOAAKCEHFGOKOPEPHFFCODAFFAAIPEOCJABIGIBGBJLPEHLFEGKGHMMLJMDLLLGLEGOHGGPLKJONNMEHDBGBFDJGGDJICNMHOHIBFMNCKAJLAEMLPGJMAKGCKMOOIJOBEKIFFINJGCFEKBMAACEPJLDEGFAGILDAKAEABDGPMDIIMJNBBOLFJEIFFIGDBMOOBCIBKKJPCKCJINOJIKHLMCI.png",
+  },
+  19: {
+    current_name: "4EvarANubie",
+    current_name_lower: "4evaranubie",
+    region: "NA",
+    server: "Bera",
+    level: 290,
+    archetype: "Explorer",
+    branch: "Mage",
+    job: "Bishop",
+    avatar:
+      "https://msavatar1.nexon.net/Character/JMPLPAOAKHANEKADDGGBKJBPNCIKCIIGHKMLHFDMKKANHAGNJJDKAMEHDGJMDEMEAOODIDLLCDAHJDPEEFOPMKFEGHCMKDEEIJDNEFPIBMOJCGHDKNBCGOJFLPJJANJGLAIHADABGIPDHAPDJMMBLNGEMNOCCDNCDGJAOLAFDEFJBFDHNBIJFEGCGELJDHBMGIJIBLKFBLBLLCNJAEODIFJMKLBLHADMJGONHMAHCHKHIMPOEGMHPKNLJDGLNOCF.png",
+  },
+};
+
 async function main() {
   const names = [
     "Alice",
@@ -22,32 +265,6 @@ async function main() {
     "Olivia",
     "Peggy",
     "Sybil",
-  ];
-
-  const playerIdsOne = [
-    "b04ddf4a-a344-4e7a-87ed-813da7c9b13f",
-    "a8c34faa-b807-4202-81d4-40e19510c445",
-    "16d16ccc-5ccc-404a-853d-44af904e7d9a",
-    "29078fd0-e439-4a79-b9da-9fc196d2603b",
-    "74169bb0-60e8-463a-b1bd-79a4094afb90",
-    "c603b29c-535e-4d92-85af-4fc52202f322",
-    "cfa4c211-c188-4aeb-89da-483afdd448c5",
-    "d9810a9c-7658-4470-aa48-6b9f39bf5bc8",
-    "b3545d29-8feb-434d-a441-6888d99ec4e5",
-    "fff5e08e-06d1-43a8-9740-6b0b552b8abc",
-  ];
-
-  const playerIdsTwo = [
-    "a8c34faa-b807-4202-81d4-40e19510c445",
-    "b04ddf4a-a344-4e7a-87ed-813da7c9b13f",
-    "29078fd0-e439-4a79-b9da-9fc196d2603b",
-    "16d16ccc-5ccc-404a-853d-44af904e7d9a",
-    "c603b29c-535e-4d92-85af-4fc52202f322",
-    "74169bb0-60e8-463a-b1bd-79a4094afb90",
-    "d9810a9c-7658-4470-aa48-6b9f39bf5bc8",
-    "cfa4c211-c188-4aeb-89da-483afdd448c5",
-    "fff5e08e-06d1-43a8-9740-6b0b552b8abc",
-    "b3545d29-8feb-434d-a441-6888d99ec4e5",
   ];
 
   const reviewMessages = [
@@ -82,10 +299,24 @@ async function main() {
       },
     });
 
+    let newPlayer = await prisma.player.create({
+      data: {
+        current_name: playerData[i].current_name,
+        current_name_lower: playerData[i].current_name_lower,
+        region: playerData[i].region,
+        server: playerData[i].server,
+        level: playerData[i].level,
+        archetype: playerData[i].archetype,
+        branch: playerData[i].branch,
+        job: playerData[i].job,
+        avatar: playerData[i].avatar,
+      },
+    });
+
     let firstReview = await prisma.review.create({
       data: {
         user_id: userAccount.id,
-        player_id: playerIdsOne[i],
+        player_id: newPlayer.id,
         rating: Math.floor(Math.random() * 3) + 3,
         comment: reviewMessages[i],
       },
@@ -108,10 +339,24 @@ async function main() {
       },
     });
 
-    let secondReview = await prisma.review.create({
+    newPlayer = await prisma.player.create({
+      data: {
+        current_name: playerData[i + 10].current_name,
+        current_name_lower: playerData[i + 10].current_name_lower,
+        region: playerData[i + 10].region,
+        server: playerData[i + 10].server,
+        level: playerData[i + 10].level,
+        archetype: playerData[i + 10].archetype,
+        branch: playerData[i + 10].branch,
+        job: playerData[i + 10].job,
+        avatar: playerData[i + 10].avatar,
+      },
+    });
+
+    secondReview = await prisma.review.create({
       data: {
         user_id: userAccount.id,
-        player_id: playerIdsTwo[i],
+        player_id: newPlayer.id,
         rating: Math.floor(Math.random() * 3) + 3,
         comment: reviewMessages[i],
       },
@@ -121,7 +366,7 @@ async function main() {
       data: {
         user_id: userAccount.id,
         review_id: secondReview.id,
-        value: -1,
+        value: 1,
       },
     });
 
@@ -130,7 +375,7 @@ async function main() {
         id: secondReview.id,
       },
       data: {
-        downvotes: 1,
+        upvotes: 1,
       },
     });
   }

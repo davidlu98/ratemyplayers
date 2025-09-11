@@ -226,7 +226,7 @@ router.get("/:region/:name", async (req, res, next) => {
           : `https://www.nexon.com/api/maplestory/no-auth/ranking/v2/eu?type=overall&id=weekly&reboot_index=0&page_index=1&character_name=${name}`;
 
       const { data } = await axios.get(link);
-      // console.log(data);
+      console.log(data);
 
       if (data.totalCount === 0) {
         return res.status(500).json("Something went wrong. Please try again.");
@@ -336,7 +336,11 @@ router.get("/:region/:name", async (req, res, next) => {
       };
 
       if (jobMap[jobID]) {
-        if (typeof jobMap[jobID] === "object" && jobID === 3) {
+        if (typeof jobMap[jobID] === "object" && jobID === 1) {
+          jobName = jobMap[jobID][jobDetail];
+        } else if (typeof jobMap[jobID] === "object" && jobID === 2) {
+          jobName = jobMap[jobID][jobDetail];
+        } else if (typeof jobMap[jobID] === "object" && jobID === 3) {
           jobName = jobMap[jobID][jobDetail] || "Pathfinder";
         } else if (typeof jobMap[jobID] === "object" && jobID === 4) {
           jobName = jobMap[jobID][jobDetail] || "Dual Blade";
