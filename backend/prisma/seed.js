@@ -248,6 +248,20 @@ const playerData = {
   },
 };
 
+// Used for demoing purposes
+const specialPlayerData = {
+  current_name: "Meowy",
+  current_name_lower: "meowy",
+  region: "NA",
+  server: "Bera",
+  level: 294,
+  archetype: "Sengoku",
+  branch: "Mage",
+  job: "Kanna",
+  avatar:
+    "https://msavatar1.nexon.net/Character/FOFPBKDGDHOIILAEPKCNGABMKEEABAKNCNFBAGEHGFKNMJKLNCLLHMCKMGJFPEIJOCGMFFDJANKADFPACHBLFOLGDGPHIJKGPJFCMAOAHFFENNJOIMPKMHIABGKDJFEEMFAHHICJDKODIMJAEHNDABAKEMCLEGBBBGKNPIEMJHMKKEPMGPCCOCFJIOEHCHCEFEHJOGCLHIKHMMHKIBFDPLFGPGCCBCHIJFDMBFOBKFJHNENHAKICDPENHJPKEAFM.png",
+};
+
 async function main() {
   const names = [
     "Alice",
@@ -285,6 +299,20 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash("password", 10);
 
+  let specialPlayer = await prisma.player.create({
+    data: {
+      current_name: specialPlayerData.current_name,
+      current_name_lower: specialPlayerData.current_name_lower,
+      region: specialPlayerData.region,
+      server: specialPlayerData.server,
+      level: specialPlayerData.level,
+      archetype: specialPlayerData.archetype,
+      branch: specialPlayerData.branch,
+      job: specialPlayerData.job,
+      avatar: specialPlayerData.avatar,
+    },
+  });
+
   for (let i = 0; i < selected.length; i++) {
     const name = selected[i];
 
@@ -313,7 +341,7 @@ async function main() {
       },
     });
 
-    let firstReview = await prisma.review.create({
+    let newReview = await prisma.review.create({
       data: {
         user_id: userAccount.id,
         player_id: newPlayer.id,
@@ -325,14 +353,14 @@ async function main() {
     await prisma.vote.create({
       data: {
         user_id: userAccount.id,
-        review_id: firstReview.id,
+        review_id: newReview.id,
         value: 1,
       },
     });
 
     await prisma.review.update({
       where: {
-        id: firstReview.id,
+        id: newReview.id,
       },
       data: {
         upvotes: 1,
@@ -353,7 +381,7 @@ async function main() {
       },
     });
 
-    secondReview = await prisma.review.create({
+    newReview = await prisma.review.create({
       data: {
         user_id: userAccount.id,
         player_id: newPlayer.id,
@@ -365,14 +393,40 @@ async function main() {
     await prisma.vote.create({
       data: {
         user_id: userAccount.id,
-        review_id: secondReview.id,
+        review_id: newReview.id,
         value: 1,
       },
     });
 
     await prisma.review.update({
       where: {
-        id: secondReview.id,
+        id: newReview.id,
+      },
+      data: {
+        upvotes: 1,
+      },
+    });
+
+    newReview = await prisma.review.create({
+      data: {
+        user_id: userAccount.id,
+        player_id: specialPlayer.id,
+        rating: Math.floor(Math.random() * 4) + 1,
+        comment: reviewMessages[i],
+      },
+    });
+
+    await prisma.vote.create({
+      data: {
+        user_id: userAccount.id,
+        review_id: newReview.id,
+        value: 1,
+      },
+    });
+
+    await prisma.review.update({
+      where: {
+        id: newReview.id,
       },
       data: {
         upvotes: 1,
